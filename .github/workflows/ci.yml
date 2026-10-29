@@ -10,21 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Make Maven wrapper executable
-        shell: bash
-        run: |
-          if [ -f mvnw ]; then
-            chmod +x mvnw
-          fi
 
       - name: Set up Java
         uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 25
+          cache: maven
 
-      - name: Compile code and execute tests
-        run: ./mvnw clean test
+      - name: Make Maven wrapper executable
+        run: chmod +x mvnw
 
-      - name: Check Code Coverage
-        run: ./mvnw -B jacoco:prepare-agent clean test jacoco:report verify
+      # verify = compile + tests + JaCoCo report + coverage check (min. 80 %)
+      - name: Build, test and check coverage
+        run: ./mvnw -B verify
