@@ -10,6 +10,7 @@ import com.switchfully.parkshark.division.domain.Division;
 import com.switchfully.parkshark.division.domain.DivisionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -67,6 +68,41 @@ class DivisionServiceTest {
 
     @Test
     void givenANonExistingDirector_whenCreatingADivision_thenCreateANewDirector() {
+        // Arrange
+        CreateDivisionDto dto = new CreateDivisionDto(
+                "Big entreprise",
+                "Small entreprise",
+                new DirectorDto("Noéline", "LaBourreau")
+        );
 
+        when(directorRepository.findByFirstNameAndLastName(
+                "Noéline", "LaBourreau"
+        )).thenReturn(null);
+
+        when(directorRepository.save(any(Director.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Division division = mock(Division.class);
+        DivisionDto expectedDto = mock(DivisionDto.class);
+
+        when(divisionMapper.toDomain(eq(dto), any(Director.class)))
+                .thenReturn(division);
+        when(divisionMapper.toDto(division)).thenReturn(expectedDto);
+
+        DivisionDto result = divisionService.createDivision(dto);
+
+        ArgumentCaptor<Director> directorCaptor =
+                ArgumentCaptor.forClass(Director.class);
+
+        verify(directorRepository).save(directorCaptor.capture());
+
+        Director savedDirector = directorCaptor.getValue();
+
+        assertEquals("Noéline", savedDirector.getFirstName());
+        assertEquals("LaBourreau", savedDirector.getLastName());
+
+        verify(divisionRepository).save(division);
+        verify(divisionMapper).toDomain(eq(dto), eq(savedDirector));
+        assertEquals(expectedDto, result);
     }
 }

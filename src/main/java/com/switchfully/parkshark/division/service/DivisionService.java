@@ -28,7 +28,7 @@ public class DivisionService {
         Director director = directorRepository.findByFirstNameAndLastName(dto.directorDto().firstName(), dto.directorDto().lastName());
 
         if (director == null) {
-            director = directorRepository.save(new Director(dto.directorDto().firstName(), dto.directorDto().firstName()));
+            director = directorRepository.save(new Director(dto.directorDto().firstName(), dto.directorDto().lastName()));
         }
 
         Division division = divisionMapper.toDomain(dto, director);
