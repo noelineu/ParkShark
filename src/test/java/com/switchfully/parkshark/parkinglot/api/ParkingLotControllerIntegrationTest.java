@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -19,6 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 class ParkingLotControllerIntegrationTest {
+
+    private static final String UNREADABLE_BODY_MESSAGE =
+            "The request body is not valid JSON or contains an unknown value";
 
     // Division 1 ('ParkShark North') is inserted by V2__add_data.sql
     private static final String VALID_PARKING_LOT = """
@@ -120,7 +124,8 @@ class ParkingLotControllerIntegrationTest {
         mockMvc.perform(post("/parking-lots")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(VALID_PARKING_LOT.replace("UNDERGROUND_BUILDING", "SUBMARINE")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value(UNREADABLE_BODY_MESSAGE));
     }
 
     @Test
@@ -129,5 +134,20 @@ class ParkingLotControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(VALID_PARKING_LOT.replace("\"divisionId\": 1", "\"divisionId\": 9999")))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createParkingLot_givenMalformedJson_thenReturns400() throws Exception {
+        mockMvc.perform(post("/parking-lots")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"name\": "))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value(UNREADABLE_BODY_MESSAGE));
+    }
+
+    @Test
+    void givenUnknownUrl_thenReturns404AndNot500() throws Exception {
+        mockMvc.perform(get("/parking-lotz"))
+                .andExpect(status().isNotFound());
     }
 }
