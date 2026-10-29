@@ -4,6 +4,7 @@ import com.switchfully.parkshark.address.service.AddressMapper;
 import com.switchfully.parkshark.parkinglot.api.dto.ContactPersonDto;
 import com.switchfully.parkshark.parkinglot.api.dto.CreateParkingLotDto;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingLotDto;
+import com.switchfully.parkshark.parkinglot.api.dto.ParkingLotSummaryDto;
 import com.switchfully.parkshark.parkinglot.domain.ContactPerson;
 import com.switchfully.parkshark.parkinglot.domain.ParkingLot;
 import org.springframework.stereotype.Component;
@@ -56,5 +57,14 @@ public class ParkingLotMapper {
                 contactPerson.getTelephone(),
                 contactPerson.getEmail(),
                 addressMapper.toDto(contactPerson.getAddress()));
+    }
+
+    public ParkingLotSummaryDto toSummaryDto(ParkingLot parkingLot) {
+        return new ParkingLotSummaryDto(
+                parkingLot.getId(),
+                parkingLot.getName(),
+                parkingLot.getMaxCapacity(),
+                parkingLot.getContactPerson().getEmail(),
+                parkingLot.getContactPerson().getTelephone());
     }
 }
