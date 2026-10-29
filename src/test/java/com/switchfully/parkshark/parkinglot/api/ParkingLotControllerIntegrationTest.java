@@ -1,6 +1,5 @@
 package com.switchfully.parkshark.parkinglot.api;
 
-import com.switchfully.parkshark.address.domain.PostalCodeRepository;
 import com.switchfully.parkshark.parkinglot.domain.ParkingLotRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,9 +56,6 @@ class ParkingLotControllerIntegrationTest {
     @Autowired
     private ParkingLotRepository parkingLotRepository;
 
-    @Autowired
-    private PostalCodeRepository postalCodeRepository;
-
     @Test
     void createParkingLot_givenValidData_thenReturns201WithCreatedParkingLot() throws Exception {
         long parkingLotsBefore = parkingLotRepository.count();
@@ -80,17 +76,6 @@ class ParkingLotControllerIntegrationTest {
                 .andExpect(jsonPath("$.divisionId").value(1));
 
         assertThat(parkingLotRepository.count()).isEqualTo(parkingLotsBefore + 1);
-    }
-
-    @Test
-    void createParkingLot_givenUnknownPostalCode_thenPostalCodeIsCreated() throws Exception {
-        mockMvc.perform(post("/parking-lots")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(VALID_PARKING_LOT))
-                .andExpect(status().isCreated());
-
-        assertThat(postalCodeRepository.findById("8000"))
-                .hasValueSatisfying(postalCode -> assertThat(postalCode.getLabel()).isEqualTo("Brugge"));
     }
 
     @Test
@@ -117,6 +102,17 @@ class ParkingLotControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(VALID_PARKING_LOT.replace("\"Shark Station\"", "\"\"")))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createParkingLot_givenKnownZipWithAnotherLabel_thenKeepsTheLabelThatWasSent() throws Exception {
+        mockMvc.perform(post("/parking-lots")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_PARKING_LOT.replace("\"zip\": \"8000\", \"label\": \"Brugge\"",
+                                "\"zip\": \"1000\", \"label\": \"Brussel\"")))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.address.postalCode.zip").value("1000"))
+                .andExpect(jsonPath("$.address.postalCode.label").value("Brussel"));
     }
 
     @Test

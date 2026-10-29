@@ -1,9 +1,6 @@
 package com.switchfully.parkshark.address.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Embeddable
 public class Address {
@@ -14,8 +11,7 @@ public class Address {
     @Column(name = "street_number")
     private String streetNumber;
 
-    @ManyToOne
-    @JoinColumn(name = "zip")
+    @Embedded
     private PostalCode postalCode;
 
     protected Address() {

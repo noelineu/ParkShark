@@ -1,6 +1,6 @@
 package com.switchfully.parkshark.parkinglot.service;
 
-import com.switchfully.parkshark.address.service.AddressService;
+import com.switchfully.parkshark.address.service.AddressMapper;
 import com.switchfully.parkshark.parkinglot.api.dto.ContactPersonDto;
 import com.switchfully.parkshark.parkinglot.api.dto.CreateParkingLotDto;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingLotDto;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ParkingLotMapper {
 
-    private final AddressService addressService;
+    private final AddressMapper addressMapper;
 
-    public ParkingLotMapper(AddressService addressService) {
-        this.addressService = addressService;
+    public ParkingLotMapper(AddressMapper addressMapper) {
+        this.addressMapper = addressMapper;
     }
 
     public ParkingLot toDomain(CreateParkingLotDto dto) {
@@ -24,7 +24,7 @@ public class ParkingLotMapper {
                 dto.maxCapacity(),
                 dto.pricePerHour(),
                 toDomain(dto.contactPerson()),
-                addressService.toAddress(dto.address()),
+                addressMapper.toDomain(dto.address()),
                 dto.divisionId());
     }
 
@@ -36,7 +36,7 @@ public class ParkingLotMapper {
                 parkingLot.getMaxCapacity(),
                 parkingLot.getPricePerHour(),
                 toDto(parkingLot.getContactPerson()),
-                addressService.toDto(parkingLot.getAddress()),
+                addressMapper.toDto(parkingLot.getAddress()),
                 parkingLot.getDivisionId());
     }
 
@@ -46,7 +46,7 @@ public class ParkingLotMapper {
                 dto.mobilePhone(),
                 dto.telephone(),
                 dto.email(),
-                addressService.toAddress(dto.address()));
+                addressMapper.toDomain(dto.address()));
     }
 
     private ContactPersonDto toDto(ContactPerson contactPerson) {
@@ -55,6 +55,6 @@ public class ParkingLotMapper {
                 contactPerson.getMobilePhone(),
                 contactPerson.getTelephone(),
                 contactPerson.getEmail(),
-                addressService.toDto(contactPerson.getAddress()));
+                addressMapper.toDto(contactPerson.getAddress()));
     }
 }

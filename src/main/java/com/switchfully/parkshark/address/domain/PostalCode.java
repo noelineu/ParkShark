@@ -1,19 +1,14 @@
 package com.switchfully.parkshark.address.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
-@Entity
-@Table(name = "zipcode")
+@Embeddable
 public class PostalCode {
 
-    @Id
-    @Column(name = "zip")
+    @Column(name = "postal_code")
     private String zip;
 
-    @Column(name = "label")
+    @Column(name = "postal_label")
     private String label;
 
     protected PostalCode() {
