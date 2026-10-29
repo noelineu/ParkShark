@@ -10,6 +10,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -145,5 +147,39 @@ class ParkingLotControllerIntegrationTest {
     void givenUnknownUrl_thenReturns404AndNot500() throws Exception {
         mockMvc.perform(get("/parking-lotz"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getAllParkingLots_thenReturns200WithAllParkingLots() throws Exception {
+        long expected = parkingLotRepository.count();
+
+        mockMvc.perform(get("/parking-lots"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value((int) expected));
+    }
+
+    @Test
+    void getAllParkingLots_thenOnlyContainsTheRequiredFields() throws Exception {
+        mockMvc.perform(get("/parking-lots"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").exists())
+                .andExpect(jsonPath("$[0].name").exists())
+                .andExpect(jsonPath("$[0].maxCapacity").exists())
+                .andExpect(jsonPath("$[0].contactPersonEmail").exists())
+                .andExpect(jsonPath("$[0].pricePerHour").doesNotExist())
+                .andExpect(jsonPath("$[0].category").doesNotExist())
+                .andExpect(jsonPath("$[0].address").doesNotExist())
+                .andExpect(jsonPath("$[0].divisionId").doesNotExist())
+                .andExpect(jsonPath("$[0].contactPerson").doesNotExist());
+    }
+
+    @Test
+    void getAllParkingLots_givenContactPersonWithOnlyMobile_thenTelephoneIsNull() throws Exception {
+        String guillemins = "$[?(@.name == 'Guillemins Tower')]";
+
+        mockMvc.perform(get("/parking-lots"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(guillemins + ".contactPersonEmail").value("marie.dubois@parkshark.be"))
+                .andExpect(jsonPath(guillemins + ".contactPersonTelephone").value(contains(nullValue())));
     }
 }
