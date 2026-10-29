@@ -17,7 +17,7 @@ public class Division {
     @Column(name = "ORIGINAL_NAME")
     private String original_name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "DIRECTOR_ID")
     private Director director;
 
