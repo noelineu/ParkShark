@@ -1,0 +1,60 @@
+package com.switchfully.parkshark.parkinglot.service;
+
+import com.switchfully.parkshark.address.service.AddressService;
+import com.switchfully.parkshark.parkinglot.api.dto.ContactPersonDto;
+import com.switchfully.parkshark.parkinglot.api.dto.CreateParkingLotDto;
+import com.switchfully.parkshark.parkinglot.api.dto.ParkingLotDto;
+import com.switchfully.parkshark.parkinglot.domain.ContactPerson;
+import com.switchfully.parkshark.parkinglot.domain.ParkingLot;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ParkingLotMapper {
+
+    private final AddressService addressService;
+
+    public ParkingLotMapper(AddressService addressService) {
+        this.addressService = addressService;
+    }
+
+    public ParkingLot toDomain(CreateParkingLotDto dto) {
+        return new ParkingLot(
+                dto.name(),
+                dto.category(),
+                dto.maxCapacity(),
+                dto.pricePerHour(),
+                toDomain(dto.contactPerson()),
+                addressService.toAddress(dto.address()),
+                dto.divisionId());
+    }
+
+    public ParkingLotDto toDto(ParkingLot parkingLot) {
+        return new ParkingLotDto(
+                parkingLot.getId(),
+                parkingLot.getName(),
+                parkingLot.getCategory(),
+                parkingLot.getMaxCapacity(),
+                parkingLot.getPricePerHour(),
+                toDto(parkingLot.getContactPerson()),
+                addressService.toDto(parkingLot.getAddress()),
+                parkingLot.getDivisionId());
+    }
+
+    private ContactPerson toDomain(ContactPersonDto dto) {
+        return new ContactPerson(
+                dto.name(),
+                dto.mobilePhone(),
+                dto.telephone(),
+                dto.email(),
+                addressService.toAddress(dto.address()));
+    }
+
+    private ContactPersonDto toDto(ContactPerson contactPerson) {
+        return new ContactPersonDto(
+                contactPerson.getName(),
+                contactPerson.getMobilePhone(),
+                contactPerson.getTelephone(),
+                contactPerson.getEmail(),
+                addressService.toDto(contactPerson.getAddress()));
+    }
+}
