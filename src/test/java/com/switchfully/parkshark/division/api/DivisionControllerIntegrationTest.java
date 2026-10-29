@@ -2,13 +2,11 @@ package com.switchfully.parkshark.division.api;
 
 import com.switchfully.parkshark.division.api.dto.CreateDivisionDto;
 import com.switchfully.parkshark.division.api.dto.DirectorDto;
-import io.restassured.RestAssured;
+import com.switchfully.parkshark.division.domain.DivisionRepository;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.boot.test.web.server.LocalManagementPort;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
@@ -20,6 +18,9 @@ class DivisionControllerIntegrationTest {
 
     @LocalServerPort
     private int port;
+
+    @Autowired
+    private DivisionRepository divisionRepository;
 
     @Test
     void givenValidDivisionDto_whenCreatingDivision_thenReturnCreatedDivision() {
@@ -62,5 +63,20 @@ class DivisionControllerIntegrationTest {
                 .post("/divisions")
         .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void givenDivisionsExist_whenGettingAllDivisions_thenReturnSameCountAsDatabase() {
+        long expectedCount = divisionRepository.count();
+
+        given()
+                .port(port)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/divisions")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("size()", equalTo((int) expectedCount));
     }
 }

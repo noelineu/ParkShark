@@ -10,6 +10,8 @@ import com.switchfully.parkshark.division.domain.DivisionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class DivisionService {
@@ -34,5 +36,9 @@ public class DivisionService {
         Division division = divisionMapper.toDomain(dto, director);
         divisionRepository.save(division);
         return divisionMapper.toDto(division);
+    }
+
+    public List<DivisionDto> getAllDivisions() {
+        return divisionMapper.toDto(divisionRepository.findAll());
     }
 }

@@ -15,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -104,5 +106,55 @@ class DivisionServiceTest {
         verify(divisionRepository).save(division);
         verify(divisionMapper).toDomain(eq(dto), eq(savedDirector));
         assertEquals(expectedDto, result);
+    }
+
+    @Test
+    void givenDivisionsExist_whenGettingAllDivisions_thenReturnAllDivisionDtos() {
+        Director director = new Director("Noéline", "LaBourreau");
+
+        Division division1 = new Division(
+                "First division",
+                "First old division",
+                director
+        );
+
+        Division division2 = new Division(
+                "Second division",
+                "Second old division",
+                director
+        );
+
+        List<Division> divisions = List.of(division1, division2);
+
+        DivisionDto divisionDto1 = mock(DivisionDto.class);
+        DivisionDto divisionDto2 = mock(DivisionDto.class);
+
+        List<DivisionDto> expectedDtos = List.of(divisionDto1, divisionDto2);
+
+        when(divisionRepository.findAll()).thenReturn(divisions);
+        when(divisionMapper.toDto(divisions)).thenReturn(expectedDtos);
+
+        List<DivisionDto> result = divisionService.getAllDivisions();
+
+        assertEquals(expectedDtos, result);
+
+        verify(divisionRepository).findAll();
+        verify(divisionMapper).toDto(divisions);
+    }
+
+    @Test
+    void givenNoDivisionsExist_whenGettingAllDivisions_thenReturnEmptyList() {
+        List<Division> divisions = List.of();
+        List<DivisionDto> expectedDtos = List.of();
+
+        when(divisionRepository.findAll()).thenReturn(divisions);
+        when(divisionMapper.toDto(divisions)).thenReturn(expectedDtos);
+
+        List<DivisionDto> result = divisionService.getAllDivisions();
+
+        assertTrue(result.isEmpty());
+
+        verify(divisionRepository).findAll();
+        verify(divisionMapper).toDto(divisions);
     }
 }
