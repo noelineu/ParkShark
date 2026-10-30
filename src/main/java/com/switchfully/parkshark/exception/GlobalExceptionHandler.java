@@ -49,11 +49,12 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, UNREADABLE_BODY_MESSAGE);
     }
 
-    /**
-     * Last resort: every exception not handled above is logged here.
-     * Spring's own errors (unknown URL, wrong HTTP method, ...) keep their status (404, 405, ...);
-     * anything else is a bug and becomes a 500 without leaking internal details to the client.
-     */
+    @ExceptionHandler(NotFoundException.class)
+    public ProblemDetail handleNotFoundException(NotFoundException exception) {
+        logger.warn("Bad request: {}", exception.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleOtherExceptions(Exception exception) {
         if (exception instanceof ErrorResponse errorResponse) {
