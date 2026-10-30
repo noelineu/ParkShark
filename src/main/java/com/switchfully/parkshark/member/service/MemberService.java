@@ -3,6 +3,7 @@ package com.switchfully.parkshark.member.service;
 import com.switchfully.parkshark.member.api.MemberMapper;
 import com.switchfully.parkshark.member.api.dto.CreateMemberDto;
 import com.switchfully.parkshark.member.api.dto.MemberDto;
+import com.switchfully.parkshark.member.api.dto.MemberSummaryDto;
 import com.switchfully.parkshark.member.domain.LicensePlate;
 import com.switchfully.parkshark.member.domain.LicensePlateRepository;
 import com.switchfully.parkshark.member.domain.Member;
@@ -11,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class MemberService {
@@ -41,5 +44,9 @@ public class MemberService {
         memberRepository.save(member);
         logger.info("Registered member {} with id {}", member.getEmail(), member.getId());
         return memberMapper.toDto(member);
+    }
+
+    public List<MemberSummaryDto> getAllMembers() {
+        return memberMapper.toSummaryDto(memberRepository.findAll());
     }
 }
