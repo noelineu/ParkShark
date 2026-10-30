@@ -3,10 +3,13 @@ package com.switchfully.parkshark.member.api;
 
 import com.switchfully.parkshark.member.api.dto.CreateMemberDto;
 import com.switchfully.parkshark.member.api.dto.MemberDto;
+import com.switchfully.parkshark.member.api.dto.MemberSummaryDto;
 import com.switchfully.parkshark.member.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "members")
@@ -23,5 +26,10 @@ public class MemberController {
     @ResponseStatus(HttpStatus.CREATED)
     public MemberDto createMember(@Valid @RequestBody CreateMemberDto createMemberDto) {
         return memberService.createMember(createMemberDto);
+    }
+
+    @GetMapping(produces = "application/json")
+    public List<MemberSummaryDto> getAllMembers() {
+        return memberService.getAllMembers();
     }
 }

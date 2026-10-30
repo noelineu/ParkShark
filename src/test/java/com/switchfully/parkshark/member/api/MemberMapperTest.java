@@ -3,10 +3,7 @@ package com.switchfully.parkshark.member.api;
 import com.switchfully.parkshark.address.api.AddressMapper;
 import com.switchfully.parkshark.address.api.dto.AddressDto;
 import com.switchfully.parkshark.address.api.dto.PostalCodeDto;
-import com.switchfully.parkshark.member.api.dto.CreateMemberDto;
-import com.switchfully.parkshark.member.api.dto.LicensePlateDto;
-import com.switchfully.parkshark.member.api.dto.LicensePlateMapper;
-import com.switchfully.parkshark.member.api.dto.MemberDto;
+import com.switchfully.parkshark.member.api.dto.*;
 import com.switchfully.parkshark.member.domain.LicensePlate;
 import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MembershipLevel;
@@ -42,6 +39,19 @@ class MemberMapperTest {
     }
 
     @Test
+    void toDomain_keepsTheChosenMembershipLevel() {
+        CreateMemberDto goldDto = new CreateMemberDto(
+                "Peter", "Parker", "0475555555", "peter.parker@mail.be",
+                new LicensePlateDto("1-SPI-001", "Belgium"),
+                MembershipLevel.GOLD,
+                new AddressDto("Naamsestraat", "22", new PostalCodeDto("3000", "Leuven")));
+
+        Member member = mapper.toDomain(goldDto, new LicensePlate("1-SPI-001", "Belgium"));
+
+        assertThat(member.getMembershipLevel()).isEqualTo(MembershipLevel.GOLD);
+    }
+
+    @Test
     void toDto_mapsEveryField() {
         Member member = mapper.toDomain(createDto, new LicensePlate("1-SPI-001", "Belgium"));
 
@@ -57,5 +67,19 @@ class MemberMapperTest {
         assertThat(dto.membershipLevel()).isEqualTo(MembershipLevel.BRONZE);
         assertThat(dto.address().streetNumber()).isEqualTo("22");
         assertThat(dto.address().postalCode().zip()).isEqualTo("3000");
+    }
+
+    @Test
+    void toSummaryDto_keepsOnlyTheSummaryFields() {
+        Member member = mapper.toDomain(createDto, new LicensePlate("1-SPI-001", "Belgium"));
+
+        MemberSummaryDto summary = mapper.toSummaryDto(member);
+
+        assertThat(summary.firstName()).isEqualTo("Peter");
+        assertThat(summary.lastName()).isEqualTo("Parker");
+        assertThat(summary.licensePlateNumber()).isEqualTo("1-SPI-001");
+        assertThat(summary.telephone()).isEqualTo("0475555555");
+        assertThat(summary.email()).isEqualTo("peter.parker@mail.be");
+        assertThat(summary.registrationDate()).isEqualTo(LocalDate.now());
     }
 }

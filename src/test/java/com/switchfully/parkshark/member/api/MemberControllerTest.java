@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -117,5 +119,64 @@ class MemberControllerIntegrationTest {
                         .content(VALID_MEMBER))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.membershipLevel").value("BRONZE"));
+    }
+    @Test
+    void createMember_withGoldLevel_thenIsGold() throws Exception {
+        mockMvc.perform(post("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_MEMBER.replace(
+                                "\"email\": \"peter.parker@mail.be\",",
+                                "\"email\": \"peter.parker@mail.be\", \"membershipLevel\": \"GOLD\",")))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.membershipLevel").value("GOLD"));
+    }
+
+    @Test
+    void createMember_withUnknownLevel_thenReturns400() throws Exception {
+        mockMvc.perform(post("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_MEMBER.replace(
+                                "\"email\": \"peter.parker@mail.be\",",
+                                "\"email\": \"peter.parker@mail.be\", \"membershipLevel\": \"PLATINUM\",")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getAllMembers_thenReturns200WithEveryMember() throws Exception {
+        mockMvc.perform(get("/members"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value((int) memberRepository.count()))
+                .andExpect(jsonPath("$[?(@.email == 'emma.willems@mail.be')].licensePlateNumber")
+                        .value(hasItem("1-ABC-123")))
+                .andExpect(jsonPath("$[?(@.email == 'emma.willems@mail.be')].registrationDate")
+                        .value(hasItem("2026-01-15")));
+    }
+
+    @Test
+    void getAllMembers_returnsOnlyTheSummaryFields() throws Exception {
+        mockMvc.perform(get("/members"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").exists())
+                .andExpect(jsonPath("$[0].firstName").exists())
+                .andExpect(jsonPath("$[0].lastName").exists())
+                .andExpect(jsonPath("$[0].licensePlateNumber").exists())
+                .andExpect(jsonPath("$[0].telephone").exists())
+                .andExpect(jsonPath("$[0].email").exists())
+                .andExpect(jsonPath("$[0].registrationDate").exists())
+                .andExpect(jsonPath("$[0].address").doesNotExist())
+                .andExpect(jsonPath("$[0].licensePlate").doesNotExist())
+                .andExpect(jsonPath("$[0].membershipLevel").doesNotExist());
+    }
+
+    @Test
+    void getAllMembers_includesANewlyRegisteredMember() throws Exception {
+        mockMvc.perform(post("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_MEMBER))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/members"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].licensePlateNumber").value(hasItem("1-SPI-001")));
     }
 }
