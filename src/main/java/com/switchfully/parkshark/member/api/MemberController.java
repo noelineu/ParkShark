@@ -32,4 +32,9 @@ public class MemberController {
     public List<MemberSummaryDto> getAllMembers() {
         return memberService.getAllMembers();
     }
+
+    @GetMapping(path = "/{id}", produces = "application/json")
+    public MemberDto getMember(@PathVariable Integer id) {
+        return memberService.getMember(id);
+    }
 }
