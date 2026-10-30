@@ -35,8 +35,8 @@ public class DivisionService {
         }
 
         if (dto.parentId() != null && divisionRepository.findById(dto.parentId()).isEmpty()) {
-            throw new DivisionNotFoundException(dto.parentId());
-        };
+            throw new IllegalArgumentException("Parent division " + dto.parentId() + " does not exist");
+        }
 
         Division division = divisionMapper.toDomain(dto, director);
         divisionRepository.save(division);

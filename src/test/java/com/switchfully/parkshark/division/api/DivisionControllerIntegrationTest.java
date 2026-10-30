@@ -159,7 +159,7 @@ class DivisionControllerIntegrationTest {
                 .when()
                 .get("/divisions/999999")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("detail", equalTo("No division found for id: 999999"));
     }
 
