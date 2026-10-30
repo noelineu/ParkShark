@@ -42,7 +42,8 @@ class DivisionServiceTest {
         CreateDivisionDto createDivisionDto = new CreateDivisionDto(
                 "Big entreprise",
                 "Small entreprise",
-                new DirectorDto("Noéline", "LaBourreau")
+                new DirectorDto("Noéline", "LaBourreau"),
+                null
         );
 
         Division division = new Division();
@@ -74,7 +75,8 @@ class DivisionServiceTest {
         CreateDivisionDto dto = new CreateDivisionDto(
                 "Big entreprise",
                 "Small entreprise",
-                new DirectorDto("Noéline", "LaBourreau")
+                new DirectorDto("Noéline", "LaBourreau"),
+                null
         );
 
         when(directorRepository.findByFirstNameAndLastName(
@@ -115,13 +117,15 @@ class DivisionServiceTest {
         Division division1 = new Division(
                 "First division",
                 "First old division",
-                director
+                director,
+                null
         );
 
         Division division2 = new Division(
                 "Second division",
                 "Second old division",
-                director
+                director,
+                null
         );
 
         List<Division> divisions = List.of(division1, division2);

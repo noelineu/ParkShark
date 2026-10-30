@@ -7,6 +7,7 @@ import com.switchfully.parkshark.division.domain.Director;
 import com.switchfully.parkshark.division.domain.DirectorRepository;
 import com.switchfully.parkshark.division.domain.Division;
 import com.switchfully.parkshark.division.domain.DivisionRepository;
+import com.switchfully.parkshark.exception.DivisionNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,10 @@ public class DivisionService {
             director = directorRepository.save(new Director(dto.directorDto().firstName(), dto.directorDto().lastName()));
         }
 
+        if (dto.parentId() != null && divisionRepository.findById(dto.parentId()).isEmpty()) {
+            throw new DivisionNotFoundException(dto.parentId());
+        };
+
         Division division = divisionMapper.toDomain(dto, director);
         divisionRepository.save(division);
         return divisionMapper.toDto(division);
@@ -40,5 +45,12 @@ public class DivisionService {
 
     public List<DivisionDto> getAllDivisions() {
         return divisionMapper.toDto(divisionRepository.findAll());
+    }
+
+    public DivisionDto getDivision(Integer id) {
+        Division division = (divisionRepository.findById(id))
+                .orElseThrow(() -> new DivisionNotFoundException(id));
+
+        return divisionMapper.toDto(division);
     }
 }

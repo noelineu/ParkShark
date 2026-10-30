@@ -75,7 +75,7 @@ class ParkingLotControllerIntegrationTest {
                 .andExpect(jsonPath("$.contactPerson.address.postalCode.label").value("Leuven"))
                 .andExpect(jsonPath("$.address.streetName").value("Sharkstraat"))
                 .andExpect(jsonPath("$.address.streetNumber").value("7"))
-                .andExpect(jsonPath("$.divisionId").value(1));
+                .andExpect(jsonPath("$.division.name").value("ParkShark North"));
 
         assertThat(parkingLotRepository.count()).isEqualTo(parkingLotsBefore + 1);
     }

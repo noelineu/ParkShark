@@ -1,5 +1,7 @@
 package com.switchfully.parkshark.parkinglot.service;
 
+import com.switchfully.parkshark.division.domain.Division;
+import com.switchfully.parkshark.division.domain.DivisionRepository;
 import com.switchfully.parkshark.parkinglot.api.dto.CreateParkingLotDto;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingLotDto;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingLotSummaryDto;
@@ -19,15 +21,21 @@ public class ParkingLotService {
 
     private final ParkingLotRepository parkingLotRepository;
     private final ParkingLotMapper parkingLotMapper;
+    private final DivisionRepository divisionRepository;
 
-    public ParkingLotService(ParkingLotRepository parkingLotRepository, ParkingLotMapper parkingLotMapper) {
+    public ParkingLotService(ParkingLotRepository parkingLotRepository, ParkingLotMapper parkingLotMapper, DivisionRepository divisionRepository) {
         this.parkingLotRepository = parkingLotRepository;
         this.parkingLotMapper = parkingLotMapper;
+        this.divisionRepository = divisionRepository;
     }
 
     @Transactional
     public ParkingLotDto createParkingLot(CreateParkingLotDto dto) {
-        ParkingLot parkingLot = parkingLotRepository.save(parkingLotMapper.toDomain(dto));
+        Division division = divisionRepository.findById(dto.divisionId().intValue())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Division with id " + dto.divisionId() + " does not exist"));
+
+        ParkingLot parkingLot = parkingLotRepository.save(parkingLotMapper.toDomain(dto, division));
         logger.info("Created parking lot {} with id {}", parkingLot.getName(), parkingLot.getId());
         return parkingLotMapper.toDto(parkingLot);
     }

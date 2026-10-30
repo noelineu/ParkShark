@@ -20,8 +20,8 @@ public class DivisionMapper {
         return new DivisionDto(
                 division.getName(),
                 division.getOriginal_name(),
-                directorMapper.toDto(division.getDirector())
-        );
+                directorMapper.toDto(division.getDirector()),
+                division.getParentId());
     }
 
     public List<DivisionDto> toDto(List<Division> divisions) {
@@ -34,7 +34,8 @@ public class DivisionMapper {
         return new Division(
                 dto.name(),
                 dto.originalName(),
-                director
+                director,
+                dto.parentId()
         );
     }
 }

@@ -21,7 +21,10 @@ public class Division {
     @JoinColumn(name = "DIRECTOR_ID")
     private Director director;
 
-    public Division(String name, String original_name, Director director) {
+    @Column(name = "PARENT_ID")
+    private Integer parentId;
+
+    public Division(String name, String original_name, Director director, Integer parentId) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("A division needs a name");
         }
@@ -35,6 +38,7 @@ public class Division {
         this.name = name;
         this.original_name = original_name;
         this.director = director;
+        this.parentId = parentId;
     }
 
     public Division() {
@@ -54,5 +58,9 @@ public class Division {
 
     public Director getDirector() {
         return director;
+    }
+
+    public Integer getParentId() {
+        return parentId;
     }
 }
