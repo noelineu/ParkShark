@@ -137,4 +137,30 @@ class DivisionControllerIntegrationTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
+    @Test
+    void givenExistingDivision_whenGettingDivisionById_thenReturnDivision() {
+        given()
+                .port(port)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/divisions/1")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("name", equalTo("ParkShark North"))
+                .body("originalName", equalTo("Parking Vlaanderen NV"))
+                .body("directorDto.lastName", equalTo("Sharkano"));
+    }
+
+    @Test
+    void givenUnknownId_whenGettingDivisionById_thenReturnError() {
+        given()
+                .port(port)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/divisions/999999")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("detail", equalTo("No division found for id: 999999"));
+    }
+
 }

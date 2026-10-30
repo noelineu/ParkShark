@@ -1,0 +1,3 @@
+ALTER TABLE parking_allocation ADD COLUMN start_time TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE parking_allocation ADD COLUMN stop_time  TIMESTAMP;
+ALTER TABLE parking_allocation ADD COLUMN status     VARCHAR(20) NOT NULL DEFAULT 'ACTIVE';
