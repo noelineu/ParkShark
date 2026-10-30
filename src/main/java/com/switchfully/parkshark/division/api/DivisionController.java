@@ -29,5 +29,4 @@ public class DivisionController {
     public List<DivisionDto> getAllDivisions() {
         return divisionService.getAllDivisions();
     }
-
 }

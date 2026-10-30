@@ -2,6 +2,7 @@ package com.switchfully.parkshark.division.api;
 
 import com.switchfully.parkshark.division.api.dto.CreateDivisionDto;
 import com.switchfully.parkshark.division.api.dto.DirectorDto;
+import com.switchfully.parkshark.division.domain.Division;
 import com.switchfully.parkshark.division.domain.DivisionRepository;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -27,7 +30,8 @@ class DivisionControllerIntegrationTest {
         CreateDivisionDto request = new CreateDivisionDto(
                 "Big entreprise",
                 "Small entreprise",
-                new DirectorDto("Noéline", "LaBourreau")
+                new DirectorDto("Noéline", "LaBourreau"),
+                null
         );
 
         given()
@@ -51,7 +55,8 @@ class DivisionControllerIntegrationTest {
         CreateDivisionDto request = new CreateDivisionDto(
                 "",
                 "Small entreprise",
-                new DirectorDto("Noéline", "LaBourreau")
+                new DirectorDto("Noéline", "LaBourreau"),
+                null
         );
 
         given()
@@ -79,4 +84,57 @@ class DivisionControllerIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body("size()", equalTo((int) expectedCount));
     }
+
+    @Test
+    void givenExistingDivision_whenPostingACreateDivisionWithParentId_thenReturnCreated() {
+        Division division = divisionRepository.findAll()
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+        int parentId = division.getId();
+
+        CreateDivisionDto request = new CreateDivisionDto(
+                "Division With Parent ID",
+                "Small entreprise",
+                new DirectorDto("Noéline", "LaBourreau"),
+                parentId
+        );
+
+        given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/divisions")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("parentId", equalTo(parentId));
+    }
+
+
+    @Test
+    void givenWrongIdForParent_whenPostingACreateDivisionWithParentId_thenReturnBadRequest() {
+
+        int parentId = 65416151;
+
+        CreateDivisionDto request = new CreateDivisionDto(
+                "Division With Parent ID",
+                "Small entreprise",
+                new DirectorDto("Noéline", "LaBourreau"),
+                parentId
+        );
+
+        given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/divisions")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
 }
