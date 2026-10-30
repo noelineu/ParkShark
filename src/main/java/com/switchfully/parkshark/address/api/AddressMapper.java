@@ -1,4 +1,4 @@
-package com.switchfully.parkshark.address.service;
+package com.switchfully.parkshark.address.api;
 
 import com.switchfully.parkshark.address.api.dto.AddressDto;
 import com.switchfully.parkshark.address.api.dto.PostalCodeDto;
