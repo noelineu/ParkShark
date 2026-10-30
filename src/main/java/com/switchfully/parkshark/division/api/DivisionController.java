@@ -29,4 +29,9 @@ public class DivisionController {
     public List<DivisionDto> getAllDivisions() {
         return divisionService.getAllDivisions();
     }
+
+    @GetMapping(value = "/{id}", produces = "application/json")
+    public DivisionDto getDivision(@PathVariable Integer id){
+        return divisionService.getDivision(id);
+    }
 }
