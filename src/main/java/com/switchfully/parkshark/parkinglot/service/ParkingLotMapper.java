@@ -1,7 +1,6 @@
 package com.switchfully.parkshark.parkinglot.service;
 
 import com.switchfully.parkshark.address.api.AddressMapper;
-import com.switchfully.parkshark.address.service.AddressMapper;
 import com.switchfully.parkshark.division.api.DivisionMapper;
 import com.switchfully.parkshark.division.domain.Division;
 import com.switchfully.parkshark.parkinglot.api.dto.ContactPersonDto;
