@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 public class LicensePlate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PLATE_NUMBER")
     private String plateNumber;
 

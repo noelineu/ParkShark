@@ -28,7 +28,7 @@ public class Member {
     @Column(name = "EMAIL")
     private String email;
 
-    @OneToOne
+    @OneToOne(optional = false)
     @JoinColumn(name = "LICENSE_PLATE_NUMBER")
     private LicensePlate licensePlate;
 

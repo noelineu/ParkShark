@@ -7,7 +7,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record CreateMemberDto(@NotBlank String firstName, @NotBlank String lastName, @NotBlank String telephone,
-                              @NotBlank @Email String email, @NotNull @Valid LicensePlateDto licensePlateDto, @NotNull
-                              MembershipLevel membershipLevel, @NotNull @Valid AddressDto addressDto) {
+public record CreateMemberDto(
+        @NotBlank String firstName,
+        @NotBlank String lastName,
+        @NotBlank String telephone,
+        @NotBlank @Email String email,
+        @NotNull @Valid LicensePlateDto licensePlate,
+        MembershipLevel membershipLevel,
+        @NotNull @Valid AddressDto address) {
 }

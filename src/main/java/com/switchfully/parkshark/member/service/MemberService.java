@@ -1,9 +1,5 @@
 package com.switchfully.parkshark.member.service;
 
-import com.switchfully.parkshark.division.api.dto.CreateDivisionDto;
-import com.switchfully.parkshark.division.api.dto.DivisionDto;
-import com.switchfully.parkshark.division.domain.Director;
-import com.switchfully.parkshark.division.domain.Division;
 import com.switchfully.parkshark.member.api.MemberMapper;
 import com.switchfully.parkshark.member.api.dto.CreateMemberDto;
 import com.switchfully.parkshark.member.api.dto.MemberDto;
@@ -20,11 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private static final Logger logger = LoggerFactory.getLogger(MemberService.class);
+
     private final MemberRepository memberRepository;
     private final LicensePlateRepository licensePlateRepository;
     private final MemberMapper memberMapper;
 
-    public MemberService(MemberRepository memberRepository, LicensePlateRepository licensePlateRepository, MemberMapper memberMapper) {
+    public MemberService(MemberRepository memberRepository, LicensePlateRepository licensePlateRepository,
+                         MemberMapper memberMapper) {
         this.memberRepository = memberRepository;
         this.licensePlateRepository = licensePlateRepository;
         this.memberMapper = memberMapper;
@@ -32,20 +30,16 @@ public class MemberService {
 
     @Transactional
     public MemberDto createMember(CreateMemberDto dto) {
-
-        if (memberRepository.existsByLicensePlate_PlateNumber(dto.licensePlateDto().plateNumber())) {
+        if (memberRepository.existsByLicensePlate_PlateNumber(dto.licensePlate().plateNumber())) {
             throw new IllegalArgumentException("A member with that license plate number already exists");
         }
 
-        LicensePlate licensePlate = new LicensePlate(dto.licensePlateDto().plateNumber(), dto.licensePlateDto().country());
-
-        licensePlateRepository.save(licensePlate);
+        LicensePlate licensePlate = licensePlateRepository.save(
+                new LicensePlate(dto.licensePlate().plateNumber(), dto.licensePlate().country()));
 
         Member member = memberMapper.toDomain(dto, licensePlate);
         memberRepository.save(member);
         logger.info("Registered member {} with id {}", member.getEmail(), member.getId());
         return memberMapper.toDto(member);
     }
-
-
 }
