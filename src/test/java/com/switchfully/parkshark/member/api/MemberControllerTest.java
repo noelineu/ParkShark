@@ -118,4 +118,24 @@ class MemberControllerIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.membershipLevel").value("BRONZE"));
     }
+    @Test
+    void createMember_withGoldLevel_thenIsGold() throws Exception {
+        mockMvc.perform(post("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_MEMBER.replace(
+                                "\"email\": \"peter.parker@mail.be\",",
+                                "\"email\": \"peter.parker@mail.be\", \"membershipLevel\": \"GOLD\",")))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.membershipLevel").value("GOLD"));
+    }
+
+    @Test
+    void createMember_withUnknownLevel_thenReturns400() throws Exception {
+        mockMvc.perform(post("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_MEMBER.replace(
+                                "\"email\": \"peter.parker@mail.be\",",
+                                "\"email\": \"peter.parker@mail.be\", \"membershipLevel\": \"PLATINUM\",")))
+                .andExpect(status().isBadRequest());
+    }
 }

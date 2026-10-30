@@ -26,6 +26,7 @@ public class MemberMapper {
                 dto.telephone(),
                 dto.email(),
                 licensePlate,
+                dto.membershipLevel(),
                 addressMapper.toDomain(dto.address()));
     }
 

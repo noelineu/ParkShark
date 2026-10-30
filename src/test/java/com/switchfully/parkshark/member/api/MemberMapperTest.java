@@ -42,6 +42,19 @@ class MemberMapperTest {
     }
 
     @Test
+    void toDomain_keepsTheChosenMembershipLevel() {
+        CreateMemberDto goldDto = new CreateMemberDto(
+                "Peter", "Parker", "0475555555", "peter.parker@mail.be",
+                new LicensePlateDto("1-SPI-001", "Belgium"),
+                MembershipLevel.GOLD,
+                new AddressDto("Naamsestraat", "22", new PostalCodeDto("3000", "Leuven")));
+
+        Member member = mapper.toDomain(goldDto, new LicensePlate("1-SPI-001", "Belgium"));
+
+        assertThat(member.getMembershipLevel()).isEqualTo(MembershipLevel.GOLD);
+    }
+
+    @Test
     void toDto_mapsEveryField() {
         Member member = mapper.toDomain(createDto, new LicensePlate("1-SPI-001", "Belgium"));
 
