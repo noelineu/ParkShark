@@ -1,6 +1,7 @@
 package com.switchfully.parkshark.parkinglot.domain;
 
 import com.switchfully.parkshark.address.domain.Address;
+import com.switchfully.parkshark.division.domain.Division;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -47,15 +48,15 @@ public class ParkingLot {
     @Embedded
     private Address address;
 
-    // TODO DIPL1: replace by a @ManyToOne Division once the Division entity exists (DI1)
-    @Column(name = "division_id")
-    private Long divisionId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "division_id")
+    private Division division;
 
     protected ParkingLot() {
     }
 
     public ParkingLot(String name, Category category, int maxCapacity, BigDecimal pricePerHour,
-                      ContactPerson contactPerson, Address address, Long divisionId) {
+                      ContactPerson contactPerson, Address address, Division division) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("A parking lot needs a name");
         }
@@ -74,7 +75,7 @@ public class ParkingLot {
         if (address == null) {
             throw new IllegalArgumentException("A parking lot needs an address");
         }
-        if (divisionId == null) {
+        if (division == null) {
             throw new IllegalArgumentException("A parking lot needs a division");
         }
         this.name = name;
@@ -83,7 +84,7 @@ public class ParkingLot {
         this.pricePerHour = pricePerHour;
         this.contactPerson = contactPerson;
         this.address = address;
-        this.divisionId = divisionId;
+        this.division = division;
     }
 
     public Long getId() {
@@ -114,7 +115,7 @@ public class ParkingLot {
         return address;
     }
 
-    public Long getDivisionId() {
-        return divisionId;
+    public Division getDivision() {
+        return division;
     }
 }
