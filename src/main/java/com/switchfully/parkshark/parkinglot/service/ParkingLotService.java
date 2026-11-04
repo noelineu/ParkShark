@@ -55,19 +55,4 @@ public class ParkingLotService {
         return parkingLot.getMaxCapacity() > occupiedSpaces;
     }
 
-    public ParkingAllocationDto createParkingAllocation(CreateParkingAllocationDto dto) {
-        Member member = memberRepository.findById(dto.memberId())
-                .orElseThrow(() -> new IllegalArgumentException("Member with id " + dto.memberId() + " does not exist"));
-
-        ParkingLot parkingLot = parkingLotRepository.findById(dto.parkingLotId())
-                .orElseThrow(() -> new IllegalArgumentException("Parking lot with id " + dto.parkingLotId() + " does not exist"));
-
-        if (!(hasCapacity(parkingLot))) {
-            throw new RuntimeException();
-        }
-
-        ParkingAllocation allocation = parkingLotAllocationRepository.save(parkingAllocationMapper.toDomain(dto, member, parkingLot));
-        return parkingAllocationMapper.toDto(allocation);
-
-        }
-    }
+}
