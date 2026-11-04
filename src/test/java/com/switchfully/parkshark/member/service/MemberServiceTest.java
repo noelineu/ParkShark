@@ -2,6 +2,7 @@ package com.switchfully.parkshark.member.service;
 
 import com.switchfully.parkshark.address.api.dto.AddressDto;
 import com.switchfully.parkshark.address.api.dto.PostalCodeDto;
+import com.switchfully.parkshark.exception.MemberNotFoundException;
 import com.switchfully.parkshark.member.api.MemberMapper;
 import com.switchfully.parkshark.member.api.dto.CreateMemberDto;
 import com.switchfully.parkshark.member.api.dto.LicensePlateDto;
@@ -20,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -99,5 +101,27 @@ class MemberServiceTest {
         when(memberRepository.findAll()).thenReturn(List.of());
 
         assertThat(memberService.getAllMembers()).isEmpty();
+    }
+
+    @Test
+    void getMember_givenExistingId_thenReturnsTheFullDto() {
+        Member member = mock(Member.class);
+        MemberDto expectedDto = mock(MemberDto.class);
+
+        when(memberRepository.findById(1)).thenReturn(Optional.of(member));
+        when(memberMapper.toDto(member)).thenReturn(expectedDto);
+
+        assertThat(memberService.getMember(1)).isSameAs(expectedDto);
+    }
+
+    @Test
+    void getMember_givenUnknownId_thenThrowsMemberNotFound() {
+        when(memberRepository.findById(999999)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> memberService.getMember(999999))
+                .isInstanceOf(MemberNotFoundException.class)
+                .hasMessage("No member found for id: 999999");
+
+        verify(memberMapper, never()).toDto(any());
     }
 }

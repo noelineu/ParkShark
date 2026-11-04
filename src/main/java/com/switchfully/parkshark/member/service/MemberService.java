@@ -1,5 +1,6 @@
 package com.switchfully.parkshark.member.service;
 
+import com.switchfully.parkshark.exception.MemberNotFoundException;
 import com.switchfully.parkshark.member.api.MemberMapper;
 import com.switchfully.parkshark.member.api.dto.CreateMemberDto;
 import com.switchfully.parkshark.member.api.dto.MemberDto;
@@ -48,5 +49,12 @@ public class MemberService {
 
     public List<MemberSummaryDto> getAllMembers() {
         return memberMapper.toSummaryDto(memberRepository.findAll());
+    }
+
+    public MemberDto getMember(Integer id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundException(id));
+
+        return memberMapper.toDto(member);
     }
 }

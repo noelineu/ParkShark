@@ -179,4 +179,35 @@ class MemberControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].licensePlateNumber").value(hasItem("1-SPI-001")));
     }
+
+    @Test
+    void getMember_givenExistingId_thenReturns200WithAllData() throws Exception {
+        int emmaId = memberRepository.findAll().stream()
+                .filter(member -> member.getEmail().equals("emma.willems@mail.be"))
+                .findFirst()
+                .orElseThrow()
+                .getId();
+
+        mockMvc.perform(get("/members/" + emmaId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(emmaId))
+                .andExpect(jsonPath("$.firstName").value("Emma"))
+                .andExpect(jsonPath("$.lastName").value("Willems"))
+                .andExpect(jsonPath("$.telephone").value("0471111111"))
+                .andExpect(jsonPath("$.email").value("emma.willems@mail.be"))
+                .andExpect(jsonPath("$.licensePlate.plateNumber").value("1-ABC-123"))
+                .andExpect(jsonPath("$.licensePlate.country").value("Belgium"))
+                .andExpect(jsonPath("$.address.streetName").value("Tiensestraat"))
+                .andExpect(jsonPath("$.address.streetNumber").value("12"))
+                .andExpect(jsonPath("$.address.postalCode.label").value("Leuven"))
+                .andExpect(jsonPath("$.registrationDate").value("2026-01-15"))
+                .andExpect(jsonPath("$.membershipLevel").value("BRONZE"));
+    }
+
+    @Test
+    void getMember_givenUnknownId_thenReturns404() throws Exception {
+        mockMvc.perform(get("/members/999999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.detail").value("No member found for id: 999999"));
+    }
 }
