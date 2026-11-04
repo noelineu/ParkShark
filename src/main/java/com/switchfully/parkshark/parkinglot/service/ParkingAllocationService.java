@@ -1,6 +1,7 @@
 package com.switchfully.parkshark.parkinglot.service;
 
 import com.switchfully.parkshark.exception.AllocationNotFoundException;
+import com.switchfully.parkshark.exception.ParkingLotNotFoundException;
 import com.switchfully.parkshark.exception.MemberNotFoundException;
 import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MemberRepository;
@@ -75,9 +76,7 @@ public class ParkingAllocationService {
         List<ParkingAllocation> parkingAllocations = status ==
                 null ? parkingAllocationRepository.findParkingAllocationsByMember(member) : parkingAllocationRepository.findParkingAllocationsByMemberAndStatus(member, status);
 
-        return parkingAllocations.stream()
-                .map(parkingAllocationMapper::toDto)
-                .toList();
+        return parkingAllocationMapper.toDto(parkingAllocations);
     }
 
     public ParkingAllocationDto stopParkingAllocation(Long allocationId, StopParkingAllocationDto dto) {
@@ -94,4 +93,12 @@ public class ParkingAllocationService {
         return parkingLot.getMaxCapacity() > occupiedSpaces;
     }
 
+    public List<ParkingAllocationDto> getAllParkingAllocationsByParkingLot(Long id, Status status) {
+        ParkingLot parkingLot = parkingLotRepository.findById(id)
+                .orElseThrow(() -> new ParkingLotNotFoundException(id));
+
+        List<ParkingAllocation> allocations = status == null ? parkingAllocationRepository.findParkingAllocationsByParkingLot(parkingLot) : parkingAllocationRepository.findParkingAllocationsByParkingLotAndStatus(parkingLot, status);
+
+        return parkingAllocationMapper.toDto(allocations);
+    }
 }

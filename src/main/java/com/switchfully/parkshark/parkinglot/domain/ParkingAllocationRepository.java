@@ -13,6 +13,10 @@ public interface ParkingAllocationRepository extends JpaRepository<ParkingAlloca
 
     List<ParkingAllocation> findParkingAllocationsByStatus(Status status);
 
+    List<ParkingAllocation> findParkingAllocationsByParkingLotAndStatus(ParkingLot parkingLot, Status status);
+
+    List<ParkingAllocation> findParkingAllocationsByParkingLot(ParkingLot parkingLot);
+
     List<ParkingAllocation> findParkingAllocationsByMember(Member member);
 
     List<ParkingAllocation> findParkingAllocationsByMemberAndStatus(Member member, Status status);

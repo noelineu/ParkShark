@@ -1,13 +1,11 @@
 package com.switchfully.parkshark.parkinglot.service;
 
 import com.switchfully.parkshark.exception.MemberNotFoundException;
+import com.switchfully.parkshark.exception.ParkingLotNotFoundException;
 import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MemberRepository;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingAllocationDto;
-import com.switchfully.parkshark.parkinglot.domain.ParkingAllocation;
-import com.switchfully.parkshark.parkinglot.domain.ParkingAllocationRepository;
-import com.switchfully.parkshark.parkinglot.domain.ParkingLotRepository;
-import com.switchfully.parkshark.parkinglot.domain.Status;
+import com.switchfully.parkshark.parkinglot.domain.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -125,6 +123,53 @@ class ParkingAllocationServiceTest {
         when(parkingAllocationRepository.findParkingAllocationsByMember(member)).thenReturn(List.of());
 
         List<ParkingAllocationDto> result = parkingAllocationService.getAllParkingLotsByMember(1L, null);
+
+        assertEquals(List.of(), result);
+    }
+
+    @Test
+    void givenUnknownParkingLot_whenGettingAllocationsByParkingLot_thenThrowsParkingLotNotFoundException() {
+        when(parkingLotRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ParkingLotNotFoundException.class,
+                () -> parkingAllocationService.getAllParkingAllocationsByParkingLot(99L, null));
+
+        verify(parkingAllocationRepository, never()).findParkingAllocationsByParkingLot(any());
+        verify(parkingAllocationRepository, never()).findParkingAllocationsByParkingLotAndStatus(any(), any());
+    }
+
+    @Test
+    void givenNoStatus_whenGettingAllocationsByParkingLot_thenSearchesAllAllocationsOfThatParkingLot() {
+        ParkingLot parkingLot = mock(ParkingLot.class);
+        when(parkingLotRepository.findById(1L)).thenReturn(Optional.of(parkingLot));
+        when(parkingAllocationRepository.findParkingAllocationsByParkingLot(parkingLot)).thenReturn(List.of());
+
+        parkingAllocationService.getAllParkingAllocationsByParkingLot(1L, null);
+
+        verify(parkingAllocationRepository).findParkingAllocationsByParkingLot(parkingLot);
+        verify(parkingAllocationRepository, never()).findParkingAllocationsByParkingLotAndStatus(any(), any());
+    }
+
+    @Test
+    void givenStatus_whenGettingAllocationsByParkingLot_thenSearchesOnParkingLotAndThatStatus() {
+        ParkingLot parkingLot = mock(ParkingLot.class);
+        when(parkingLotRepository.findById(1L)).thenReturn(Optional.of(parkingLot));
+        when(parkingAllocationRepository.findParkingAllocationsByParkingLotAndStatus(parkingLot, Status.ACTIVE))
+                .thenReturn(List.of());
+
+        parkingAllocationService.getAllParkingAllocationsByParkingLot(1L, Status.ACTIVE);
+
+        verify(parkingAllocationRepository).findParkingAllocationsByParkingLotAndStatus(parkingLot, Status.ACTIVE);
+        verify(parkingAllocationRepository, never()).findParkingAllocationsByParkingLot(any());
+    }
+
+    @Test
+    void givenParkingLotWithoutAllocations_whenGettingAllocationsByParkingLot_thenReturnsEmptyList() {
+        ParkingLot parkingLot = mock(ParkingLot.class);
+        when(parkingLotRepository.findById(1L)).thenReturn(Optional.of(parkingLot));
+        when(parkingAllocationRepository.findParkingAllocationsByParkingLot(parkingLot)).thenReturn(List.of());
+
+        List<ParkingAllocationDto> result = parkingAllocationService.getAllParkingAllocationsByParkingLot(1L, null);
 
         assertEquals(List.of(), result);
     }

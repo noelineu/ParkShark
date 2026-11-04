@@ -48,4 +48,9 @@ public class ParkingAllocationController {
         return parkingAllocationService.stopParkingAllocation(allocationId, stopParkingAllocationDto);
     }
 
+    @GetMapping(path = "/parking-lots/{parkingLotId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ParkingAllocationDto> getAllParkingAllocationsByParkingLot(@PathVariable Long parkingLotId,
+                                                                           @RequestParam(name = "status", required = false) Status status) {
+        return parkingAllocationService.getAllParkingAllocationsByParkingLot(parkingLotId, status);
+    }
 }
