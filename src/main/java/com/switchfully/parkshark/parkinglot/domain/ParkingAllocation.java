@@ -56,13 +56,13 @@ public class ParkingAllocation {
         this.status = Status.ACTIVE;
     }
 
-    public void stop(Long id) {
-        if (!getMember().getId().equals(id)) {
-            throw new OwnerAllocationException(id, getMember().getId());
+    public void stop(Long memberId) {
+        if (!getMember().getId().equals(memberId)) {
+            throw new OwnerAllocationException(this.id, memberId);
         }
 
         if (status != Status.ACTIVE) {
-            throw new InactiveAllocationException(id);
+            throw new InactiveAllocationException(this.id);
         }
 
         this.stopTime = LocalDateTime.now();

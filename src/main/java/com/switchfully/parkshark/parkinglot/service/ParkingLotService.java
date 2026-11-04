@@ -4,6 +4,7 @@ import com.switchfully.parkshark.division.domain.Division;
 import com.switchfully.parkshark.division.domain.DivisionRepository;
 import com.switchfully.parkshark.exception.NotFoundException;
 import com.switchfully.parkshark.exception.ParkingLotNotFoundException;
+import com.switchfully.parkshark.exception.AllocationNotFoundException;
 import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MemberRepository;
 import com.switchfully.parkshark.parkinglot.api.dto.*;
