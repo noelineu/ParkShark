@@ -11,4 +11,8 @@ public interface ParkingAllocationRepository extends JpaRepository<ParkingAlloca
     int countParkingAllocationByParkingLotAndStatus(ParkingLot parkingLot, Status status);
 
     List<ParkingAllocation> findParkingAllocationsByStatus(Status status);
+
+    List<ParkingAllocation> findParkingAllocationsByParkingLotAndStatus(ParkingLot parkingLot, Status status);
+
+    List<ParkingAllocation> findParkingAllocationsByParkingLot(ParkingLot parkingLot);
 }
