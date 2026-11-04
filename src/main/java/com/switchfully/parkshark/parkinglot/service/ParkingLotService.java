@@ -55,12 +55,4 @@ public class ParkingLotService {
         return parkingLot.getMaxCapacity() > occupiedSpaces;
     }
 
-        public ParkingAllocationDto stopParkingAllocation(Long allocationId, StopParkingAllocationDto dto) {
-            ParkingAllocation parkingAllocation = parkingLotAllocationRepository.findById(allocationId)
-                    .orElseThrow(() -> new AllocationNotFoundException(allocationId));
-
-            parkingAllocation.stop(dto.memberId());
-
-            return parkingAllocationMapper.toDto(parkingAllocation);
-        }
-    }
+}

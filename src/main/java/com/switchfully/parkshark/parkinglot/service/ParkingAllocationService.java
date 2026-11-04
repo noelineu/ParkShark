@@ -1,9 +1,11 @@
 package com.switchfully.parkshark.parkinglot.service;
 
+import com.switchfully.parkshark.exception.AllocationNotFoundException;
 import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MemberRepository;
 import com.switchfully.parkshark.parkinglot.api.dto.CreateParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingAllocationDto;
+import com.switchfully.parkshark.parkinglot.api.dto.StopParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.domain.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -61,6 +63,15 @@ public class ParkingAllocationService {
                 .limit(limit == null ? Long.MAX_VALUE : limit)
                 .map(parkingAllocationMapper::toDto)
                 .toList();
+    }
+
+    public ParkingAllocationDto stopParkingAllocation(Long allocationId, StopParkingAllocationDto dto) {
+        ParkingAllocation parkingAllocation = parkingAllocationRepository.findById(allocationId)
+                .orElseThrow(() -> new AllocationNotFoundException(allocationId));
+
+        parkingAllocation.stop(dto.memberId());
+
+        return parkingAllocationMapper.toDto(parkingAllocation);
     }
 
     private boolean hasCapacity(ParkingLot parkingLot) {

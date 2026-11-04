@@ -68,8 +68,8 @@ class ParkingAllocationServiceTest {
         when(january.getStartTime()).thenReturn(LocalDateTime.of(2026, 1, 1, 8, 0));
         when(march.getStartTime()).thenReturn(LocalDateTime.of(2026, 3, 1, 8, 0));
 
-        ParkingAllocationDto januaryDto = new ParkingAllocationDto(1L, null, null, null, null, null);
-        ParkingAllocationDto marchDto = new ParkingAllocationDto(2L, null, null, null, null, null);
+        ParkingAllocationDto januaryDto = new ParkingAllocationDto(1L, null, null, null, null, null, null);
+        ParkingAllocationDto marchDto = new ParkingAllocationDto(2L, null, null, null, null, null, null);
         when(parkingAllocationMapper.toDto(january)).thenReturn(januaryDto);
         when(parkingAllocationMapper.toDto(march)).thenReturn(marchDto);
 

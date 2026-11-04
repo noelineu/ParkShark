@@ -2,6 +2,7 @@ package com.switchfully.parkshark.parkinglot.api;
 
 import com.switchfully.parkshark.parkinglot.api.dto.CreateParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingAllocationDto;
+import com.switchfully.parkshark.parkinglot.api.dto.StopParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.domain.Status;
 import com.switchfully.parkshark.parkinglot.service.ParkingAllocationService;
 import jakarta.validation.Valid;
@@ -33,6 +34,12 @@ public class ParkingAllocationController {
                                                                @RequestParam(name = "status", required = false) Status status,
                                                                @RequestParam(name = "order", defaultValue = "ASC") Sort.Direction order) {
         return parkingAllocationService.getAllParkingAllocations(limit, status, order);
+    }
+
+    @PostMapping(path = "/{allocationId}/stop", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ParkingAllocationDto stopAllocation(@PathVariable Long allocationId, @Valid @RequestBody StopParkingAllocationDto stopParkingAllocationDto) {
+        return parkingAllocationService.stopParkingAllocation(allocationId, stopParkingAllocationDto);
     }
 
 }
