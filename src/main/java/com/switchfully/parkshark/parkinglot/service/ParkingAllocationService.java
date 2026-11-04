@@ -1,10 +1,13 @@
 package com.switchfully.parkshark.parkinglot.service;
 
 import com.switchfully.parkshark.exception.AllocationNotFoundException;
+import com.switchfully.parkshark.exception.ParkingLotNotFoundException;
+import com.switchfully.parkshark.exception.MemberNotFoundException;
 import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MemberRepository;
 import com.switchfully.parkshark.parkinglot.api.dto.CreateParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingAllocationDto;
+import com.switchfully.parkshark.parkinglot.api.dto.ParkingLotSummaryDto;
 import com.switchfully.parkshark.parkinglot.api.dto.StopParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.domain.*;
 import org.springframework.data.domain.Sort;
@@ -67,6 +70,15 @@ public class ParkingAllocationService {
                 .toList();
     }
 
+    public List<ParkingAllocationDto> getAllParkingLotsByMember(Long memberId, Status status) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId));
+
+        List<ParkingAllocation> parkingAllocations = status ==
+                null ? parkingAllocationRepository.findParkingAllocationsByMember(member) : parkingAllocationRepository.findParkingAllocationsByMemberAndStatus(member, status);
+
+        return parkingAllocationMapper.toDto(parkingAllocations);
+    }
+
     public ParkingAllocationDto stopParkingAllocation(Long allocationId, StopParkingAllocationDto dto) {
         ParkingAllocation parkingAllocation = parkingAllocationRepository.findById(allocationId)
                 .orElseThrow(() -> new AllocationNotFoundException(allocationId));
@@ -81,4 +93,12 @@ public class ParkingAllocationService {
         return parkingLot.getMaxCapacity() > occupiedSpaces;
     }
 
+    public List<ParkingAllocationDto> getAllParkingAllocationsByParkingLot(Long id, Status status) {
+        ParkingLot parkingLot = parkingLotRepository.findById(id)
+                .orElseThrow(() -> new ParkingLotNotFoundException(id));
+
+        List<ParkingAllocation> allocations = status == null ? parkingAllocationRepository.findParkingAllocationsByParkingLot(parkingLot) : parkingAllocationRepository.findParkingAllocationsByParkingLotAndStatus(parkingLot, status);
+
+        return parkingAllocationMapper.toDto(allocations);
+    }
 }

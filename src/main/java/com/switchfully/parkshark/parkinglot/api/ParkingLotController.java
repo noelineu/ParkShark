@@ -1,6 +1,7 @@
 package com.switchfully.parkshark.parkinglot.api;
 
 import com.switchfully.parkshark.parkinglot.api.dto.*;
+import com.switchfully.parkshark.parkinglot.domain.ParkingAllocation;
 import com.switchfully.parkshark.parkinglot.service.ParkingLotService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -28,5 +29,10 @@ public class ParkingLotController {
     @GetMapping
     public List<ParkingLotSummaryDto> getAllParkingLots() {
         return parkingLotService.getAllParkingLots();
+    }
+
+    @GetMapping("/{id}")
+    public ParkingLotDto getParkingLot(@PathVariable Long id){
+        return parkingLotService.getParkingLotById(id);
     }
 }

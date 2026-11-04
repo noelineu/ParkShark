@@ -36,10 +36,21 @@ public class ParkingAllocationController {
         return parkingAllocationService.getAllParkingAllocations(limit, status, order);
     }
 
+    @GetMapping(value = "/members/{memberId}", produces = "application/json")
+    public List<ParkingAllocationDto> getAllParkingAllocationsByMember(@PathVariable Long memberId,
+                                                                       @RequestParam(name = "status", required = false) Status status) {
+        return parkingAllocationService.getAllParkingLotsByMember(memberId, status);
+    }
+
     @PostMapping(path = "/{allocationId}/stop", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ParkingAllocationDto stopAllocation(@PathVariable Long allocationId, @Valid @RequestBody StopParkingAllocationDto stopParkingAllocationDto) {
         return parkingAllocationService.stopParkingAllocation(allocationId, stopParkingAllocationDto);
     }
 
+    @GetMapping(path = "/parking-lots/{parkingLotId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ParkingAllocationDto> getAllParkingAllocationsByParkingLot(@PathVariable Long parkingLotId,
+                                                                           @RequestParam(name = "status", required = false) Status status) {
+        return parkingAllocationService.getAllParkingAllocationsByParkingLot(parkingLotId, status);
+    }
 }
