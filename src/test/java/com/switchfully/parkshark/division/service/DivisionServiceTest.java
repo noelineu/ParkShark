@@ -8,6 +8,7 @@ import com.switchfully.parkshark.division.domain.Director;
 import com.switchfully.parkshark.division.domain.DirectorRepository;
 import com.switchfully.parkshark.division.domain.Division;
 import com.switchfully.parkshark.division.domain.DivisionRepository;
+import com.switchfully.parkshark.exception.DivisionNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -160,5 +162,27 @@ class DivisionServiceTest {
 
         verify(divisionRepository).findAll();
         verify(divisionMapper).toDto(divisions);
+    }
+
+    @Test
+    void givenExistingId_whenGettingDivision_thenReturnTheDto() {
+        Division division = new Division();
+        DivisionDto expectedDto = mock(DivisionDto.class);
+
+        when(divisionRepository.findById(1L)).thenReturn(Optional.of(division));
+        when(divisionMapper.toDto(division)).thenReturn(expectedDto);
+
+        assertSame(expectedDto, divisionService.getDivision(1L));
+    }
+
+    @Test
+    void givenUnknownId_whenGettingDivision_thenThrowDivisionNotFound() {
+        when(divisionRepository.findById(999999L)).thenReturn(Optional.empty());
+
+        DivisionNotFoundException exception = assertThrows(DivisionNotFoundException.class,
+                () -> divisionService.getDivision(999999L));
+
+        assertEquals("No division found for id: 999999", exception.getMessage());
+        verify(divisionMapper, never()).toDto(any(Division.class));
     }
 }
