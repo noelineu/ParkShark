@@ -2,6 +2,9 @@ package com.switchfully.parkshark.parkinglot.service;
 
 import com.switchfully.parkshark.division.domain.Division;
 import com.switchfully.parkshark.division.domain.DivisionRepository;
+import com.switchfully.parkshark.exception.NotFoundException;
+import com.switchfully.parkshark.exception.ParkingLotNotFoundException;
+import com.switchfully.parkshark.exception.AllocationNotFoundException;
 import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MemberRepository;
 import com.switchfully.parkshark.parkinglot.api.dto.*;
@@ -53,6 +56,13 @@ public class ParkingLotService {
     private boolean hasCapacity(ParkingLot parkingLot) {
         int occupiedSpaces = parkingAllocationRepository.countParkingAllocationByParkingLotAndStatus(parkingLot, Status.ACTIVE);
         return parkingLot.getMaxCapacity() > occupiedSpaces;
+    }
+
+    public ParkingLotDto getParkingLotById(Long id){
+        ParkingLot parkingLot = parkingLotRepository.findById(id)
+                .orElseThrow(() -> new ParkingLotNotFoundException(id));
+        return parkingLotMapper.toDto(parkingLot);
+
     }
 
 }
