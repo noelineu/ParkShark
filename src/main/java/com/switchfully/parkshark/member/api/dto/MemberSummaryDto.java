@@ -3,7 +3,7 @@ package com.switchfully.parkshark.member.api.dto;
 import java.time.LocalDate;
 
 public record MemberSummaryDto (
-    int id,
+    Long id,
     String firstName,
     String lastName,
     String licensePlateNumber,

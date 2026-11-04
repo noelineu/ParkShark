@@ -22,9 +22,9 @@ public class Division {
     private Director director;
 
     @Column(name = "PARENT_ID")
-    private Integer parentId;
+    private Long parentId;
 
-    public Division(String name, String original_name, Director director, Integer parentId) {
+    public Division(String name, String original_name, Director director, Long parentId) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("A division needs a name");
         }
@@ -60,7 +60,7 @@ public class Division {
         return director;
     }
 
-    public Integer getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 }

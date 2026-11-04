@@ -92,7 +92,7 @@ class DivisionControllerIntegrationTest {
                 .findFirst()
                 .orElse(null);
 
-        int parentId = division.getId();
+        Long parentId = division.getId();
 
         CreateDivisionDto request = new CreateDivisionDto(
                 "Division With Parent ID",
@@ -110,14 +110,14 @@ class DivisionControllerIntegrationTest {
                 .post("/divisions")
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
-                .body("parentId", equalTo(parentId));
+                .body("parentId", equalTo(parentId.intValue()));
     }
 
 
     @Test
     void givenWrongIdForParent_whenPostingACreateDivisionWithParentId_thenReturnBadRequest() {
 
-        int parentId = 65416151;
+        Long parentId = 65416151L;
 
         CreateDivisionDto request = new CreateDivisionDto(
                 "Division With Parent ID",

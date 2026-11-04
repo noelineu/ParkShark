@@ -9,7 +9,7 @@ public class Director {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private int id;
+    private Long id;
 
     @Column(name = "FIRST_NAME")
     private String firstName;
@@ -31,7 +31,7 @@ public class Director {
     public Director() {
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

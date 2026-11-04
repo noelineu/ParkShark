@@ -36,7 +36,7 @@ public class ParkingLotService {
     }
 
     public ParkingLotDto createParkingLot(CreateParkingLotDto dto) {
-        Division division = divisionRepository.findById(dto.divisionId().intValue())
+        Division division = divisionRepository.findById(dto.divisionId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Division with id " + dto.divisionId() + " does not exist"));
 

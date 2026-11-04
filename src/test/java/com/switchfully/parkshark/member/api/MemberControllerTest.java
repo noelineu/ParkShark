@@ -182,7 +182,7 @@ class MemberControllerIntegrationTest {
 
     @Test
     void getMember_givenExistingId_thenReturns200WithAllData() throws Exception {
-        int emmaId = memberRepository.findAll().stream()
+        Long emmaId = memberRepository.findAll().stream()
                 .filter(member -> member.getEmail().equals("emma.willems@mail.be"))
                 .findFirst()
                 .orElseThrow()
