@@ -36,6 +36,12 @@ public class ParkingAllocationController {
         return parkingAllocationService.getAllParkingAllocations(limit, status, order);
     }
 
+    @GetMapping(value = "/members/{memberId}", produces = "application/json")
+    public List<ParkingAllocationDto> getAllParkingAllocationsByMember(@PathVariable Long memberId,
+                                                                       @RequestParam(name = "status", required = false) Status status) {
+        return parkingAllocationService.getAllParkingLotsByMember(memberId, status);
+    }
+
     @PostMapping(path = "/{allocationId}/stop", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ParkingAllocationDto stopAllocation(@PathVariable Long allocationId, @Valid @RequestBody StopParkingAllocationDto stopParkingAllocationDto) {

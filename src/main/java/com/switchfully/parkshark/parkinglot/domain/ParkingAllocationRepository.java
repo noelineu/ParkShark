@@ -1,5 +1,6 @@
 package com.switchfully.parkshark.parkinglot.domain;
 
+import com.switchfully.parkshark.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +16,9 @@ public interface ParkingAllocationRepository extends JpaRepository<ParkingAlloca
     List<ParkingAllocation> findParkingAllocationsByParkingLotAndStatus(ParkingLot parkingLot, Status status);
 
     List<ParkingAllocation> findParkingAllocationsByParkingLot(ParkingLot parkingLot);
+
+    List<ParkingAllocation> findParkingAllocationsByMember(Member member);
+
+    List<ParkingAllocation> findParkingAllocationsByMemberAndStatus(Member member, Status status);
+
 }
