@@ -1,4 +1,6 @@
 package com.switchfully.parkshark.parkinglot.domain;
+import com.switchfully.parkshark.exception.InactiveAllocationException;
+import com.switchfully.parkshark.exception.OwnerAllocationException;
 import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MembershipLevel;
 import jakarta.persistence.*;
@@ -54,7 +56,18 @@ public class ParkingAllocation {
         this.status = Status.ACTIVE;
     }
 
+    public void stop(Long id) {
+        if (!getMember().getId().equals(id)) {
+            throw new OwnerAllocationException(id, getMember().getId());
+        }
 
+        if (status != Status.ACTIVE) {
+            throw new InactiveAllocationException(id);
+        }
+
+        this.stopTime = LocalDateTime.now();
+        this.status = Status.INACTIVE;
+    }
 
     public Long getId() {
         return id;

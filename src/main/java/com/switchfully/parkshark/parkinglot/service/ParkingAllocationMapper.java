@@ -16,6 +16,7 @@ public class ParkingAllocationMapper {
                 parkingAllocation.getParkingLot().getId(),
                 parkingAllocation.getLicensePlateNumber(),
                 parkingAllocation.getStartTime(),
+                parkingAllocation.getStopTime(),
                 parkingAllocation.getStatus()
         );
     }

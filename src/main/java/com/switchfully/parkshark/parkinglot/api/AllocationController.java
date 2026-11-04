@@ -2,6 +2,7 @@ package com.switchfully.parkshark.parkinglot.api;
 
 import com.switchfully.parkshark.parkinglot.api.dto.CreateParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingAllocationDto;
+import com.switchfully.parkshark.parkinglot.api.dto.StopParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.service.ParkingLotService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -22,5 +23,11 @@ public class AllocationController {
     @ResponseStatus(HttpStatus.CREATED)
     public ParkingAllocationDto createAllocation(@Valid @RequestBody CreateParkingAllocationDto createParkingAllocationDto) {
         return parkingLotService.createParkingAllocation(createParkingAllocationDto);
+    }
+
+    @PostMapping(path = "/{allocationId}/stop", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ParkingAllocationDto stopAllocation(@PathVariable Long allocationId, @Valid @RequestBody StopParkingAllocationDto stopParkingAllocationDto) {
+        return parkingLotService.stopParkingAllocation(allocationId, stopParkingAllocationDto);
     }
 }

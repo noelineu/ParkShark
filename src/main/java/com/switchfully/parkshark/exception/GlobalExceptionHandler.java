@@ -56,6 +56,12 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
+    @ExceptionHandler(OwnerAllocationException.class)
+    public ProblemDetail handleOwnerAllocationException(OwnerAllocationException exception) {
+        logger.warn("Forbidden: {}", exception.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, exception.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ProblemDetail handleTypeMismatch(MethodArgumentTypeMismatchException exception) {
         logger.warn("Invalid value '{}' for parameter '{}'", exception.getValue(), exception.getName());

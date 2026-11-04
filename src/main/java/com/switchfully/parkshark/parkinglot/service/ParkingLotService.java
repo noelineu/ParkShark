@@ -2,6 +2,7 @@ package com.switchfully.parkshark.parkinglot.service;
 
 import com.switchfully.parkshark.division.domain.Division;
 import com.switchfully.parkshark.division.domain.DivisionRepository;
+import com.switchfully.parkshark.exception.AllocationNotFoundException;
 import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MemberRepository;
 import com.switchfully.parkshark.parkinglot.api.dto.*;
@@ -69,5 +70,14 @@ public class ParkingLotService {
         ParkingAllocation allocation = parkingLotAllocationRepository.save(parkingAllocationMapper.toDomain(dto, member, parkingLot));
         return parkingAllocationMapper.toDto(allocation);
 
+        }
+
+        public ParkingAllocationDto stopParkingAllocation(Long allocationId, StopParkingAllocationDto dto) {
+            ParkingAllocation parkingAllocation = parkingLotAllocationRepository.findById(allocationId)
+                    .orElseThrow(() -> new AllocationNotFoundException(allocationId));
+
+            parkingAllocation.stop(dto.memberId());
+
+            return parkingAllocationMapper.toDto(parkingAllocation);
         }
     }
