@@ -62,8 +62,8 @@ public class ParkingLotService {
         ParkingLot parkingLot = parkingLotRepository.findById(dto.parkingLotId())
                 .orElseThrow(() -> new IllegalArgumentException("Parking lot with id " + dto.parkingLotId() + " does not exist"));
 
-        if (!(hasCapacity(parkingLot))) {
-            throw new RuntimeException();
+        if (!hasCapacity(parkingLot)) {
+            throw new IllegalArgumentException("Parking lot " + parkingLot.getId() + " is full");
         }
 
         ParkingAllocation allocation = parkingLotAllocationRepository.save(parkingAllocationMapper.toDomain(dto, member, parkingLot));
