@@ -76,9 +76,7 @@ public class ParkingAllocationService {
         List<ParkingAllocation> parkingAllocations = status ==
                 null ? parkingAllocationRepository.findParkingAllocationsByMember(member) : parkingAllocationRepository.findParkingAllocationsByMemberAndStatus(member, status);
 
-        return parkingAllocations.stream()
-                .map(parkingAllocationMapper::toDto)
-                .toList();
+        return parkingAllocationMapper.toDto(parkingAllocations);
     }
 
     public ParkingAllocationDto stopParkingAllocation(Long allocationId, StopParkingAllocationDto dto) {
