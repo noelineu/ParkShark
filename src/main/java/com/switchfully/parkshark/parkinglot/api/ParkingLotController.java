@@ -29,4 +29,9 @@ public class ParkingLotController {
     public List<ParkingLotSummaryDto> getAllParkingLots() {
         return parkingLotService.getAllParkingLots();
     }
+
+    @GetMapping("/{id}")
+    public ParkingLotDto getParkingLot(@PathVariable Long id){
+        return parkingLotService.getParkingLotById(id);
+    }
 }
