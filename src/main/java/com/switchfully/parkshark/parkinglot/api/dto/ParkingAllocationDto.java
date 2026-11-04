@@ -4,4 +4,4 @@ import com.switchfully.parkshark.parkinglot.domain.Status;
 
 import java.time.LocalDateTime;
 
-public record ParkingAllocationDto(Long id, Long memberId, Long parkingLotId, String LicensePlateNumber, LocalDateTime startTime, Status status) {}
+public record ParkingAllocationDto(Long id, Long memberId, Long parkingLotId, String licensePlateNumber, LocalDateTime startTime, Status status) {}
