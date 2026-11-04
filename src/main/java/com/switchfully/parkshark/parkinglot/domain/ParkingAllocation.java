@@ -73,7 +73,7 @@ public class ParkingAllocation {
 
     public long getBilledHours() {
         if (stopTime == null) {
-            throw new IllegalArgumentException("Allocation " + id + " is still active and cannot be billed.");
+            throw new IllegalStateException("Allocation " + id + " is still active and cannot be billed.");
         }
         return billedHoursBetween(startTime, stopTime);
     }
