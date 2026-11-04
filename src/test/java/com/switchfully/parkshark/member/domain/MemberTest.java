@@ -16,53 +16,60 @@ class MemberTest {
 
     @Test
     void givenValidData_thenMemberIsCreatedWithTodayAndBronze() {
-        Member member = new Member("Emma", "Willems", "0471111111", "emma@mail.be", plate, address);
+        Member member = new Member("Emma", "Willems", "0471111111", "emma@mail.be", plate, MembershipLevel.SILVER,  address);
 
         assertThat(member.getFirstName()).isEqualTo("Emma");
         assertThat(member.getLicensePlate()).isSameAs(plate);
         assertThat(member.getAddress()).isSameAs(address);
         assertThat(member.getRegistrationDate()).isEqualTo(LocalDate.now());
-        assertThat(member.getMembershipLevel()).isEqualTo(MembershipLevel.BRONZE);
+        assertThat(member.getMembershipLevel()).isEqualTo(MembershipLevel.SILVER);
     }
 
     @Test
     void givenNoFirstName_thenThrowsException() {
-        assertThatThrownBy(() -> new Member(" ", "Willems", "0471111111", "emma@mail.be", plate, address))
+        assertThatThrownBy(() -> new Member(" ", "Willems", "0471111111", "emma@mail.be", plate, null, address))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("A member needs a first name");
     }
 
     @Test
     void givenNoLastName_thenThrowsException() {
-        assertThatThrownBy(() -> new Member("Emma", null, "0471111111", "emma@mail.be", plate, address))
+        assertThatThrownBy(() -> new Member("Emma", null, "0471111111", "emma@mail.be", plate, null, address))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("A member needs a last name");
     }
 
     @Test
     void givenNoTelephone_thenThrowsException() {
-        assertThatThrownBy(() -> new Member("Emma", "Willems", "", "emma@mail.be", plate, address))
+        assertThatThrownBy(() -> new Member("Emma", "Willems", "", "emma@mail.be", plate, null, address))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("A member needs a telephone number");
     }
 
     @Test
     void givenNoEmail_thenThrowsException() {
-        assertThatThrownBy(() -> new Member("Emma", "Willems", "0471111111", null, plate, address))
+        assertThatThrownBy(() -> new Member("Emma", "Willems", "0471111111", null, plate, null, address))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("A member needs an email address");
     }
 
     @Test
     void givenNoLicensePlate_thenThrowsException() {
-        assertThatThrownBy(() -> new Member("Emma", "Willems", "0471111111", "emma@mail.be", null, address))
+        assertThatThrownBy(() -> new Member("Emma", "Willems", "0471111111", "emma@mail.be", null, null, address))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("A member needs a license plate");
     }
 
     @Test
+    void givenNoMembershipLevel_thenIsBronze() {
+        Member member = new Member("Emma", "Willems", "0471111111", "emma@mail.be", plate, null, address);
+
+        assertThat(member.getMembershipLevel()).isEqualTo(MembershipLevel.BRONZE);
+    }
+
+    @Test
     void givenNoAddress_thenThrowsException() {
-        assertThatThrownBy(() -> new Member("Emma", "Willems", "0471111111", "emma@mail.be", plate, null))
+        assertThatThrownBy(() -> new Member("Emma", "Willems", "0471111111", "emma@mail.be", plate, null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("A member needs an address");
     }

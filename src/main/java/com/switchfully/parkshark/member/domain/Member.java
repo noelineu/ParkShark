@@ -46,7 +46,7 @@ public class Member {
     public Member() {
     }
 
-    public Member(String firstName, String lastName, String telephone, String email, LicensePlate licensePlate, Address address) {
+    public Member(String firstName, String lastName, String telephone, String email, LicensePlate licensePlate, MembershipLevel membershipLevel, Address address) {
         if (firstName == null || firstName.isBlank()) {
             throw new IllegalArgumentException("A member needs a first name");
         }
@@ -72,7 +72,7 @@ public class Member {
         this.email = email;
         this.licensePlate = licensePlate;
         this.registrationDate = LocalDate.now();
-        this.membershipLevel = MembershipLevel.BRONZE;
+        this.membershipLevel = membershipLevel != null ? membershipLevel : MembershipLevel.BRONZE;
         this.address = address;
     }
 
