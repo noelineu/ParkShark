@@ -11,11 +11,13 @@ import com.switchfully.parkshark.parkinglot.api.dto.StopParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.domain.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
 
 @Service
+@Transactional
 public class ParkingAllocationService {
 
     private final ParkingLotRepository parkingLotRepository;
