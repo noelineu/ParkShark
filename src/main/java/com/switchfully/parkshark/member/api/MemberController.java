@@ -34,7 +34,7 @@ public class MemberController {
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
-    public MemberDto getMember(@PathVariable Integer id) {
+    public MemberDto getMember(@PathVariable Long id) {
         return memberService.getMember(id);
     }
 }

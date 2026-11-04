@@ -31,7 +31,7 @@ public class DivisionController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
-    public DivisionDto getDivision(@PathVariable Integer id){
+    public DivisionDto getDivision(@PathVariable Long id){
         return divisionService.getDivision(id);
     }
 }

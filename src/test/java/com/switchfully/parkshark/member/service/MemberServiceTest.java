@@ -108,17 +108,17 @@ class MemberServiceTest {
         Member member = mock(Member.class);
         MemberDto expectedDto = mock(MemberDto.class);
 
-        when(memberRepository.findById(1)).thenReturn(Optional.of(member));
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
         when(memberMapper.toDto(member)).thenReturn(expectedDto);
 
-        assertThat(memberService.getMember(1)).isSameAs(expectedDto);
+        assertThat(memberService.getMember(1L)).isSameAs(expectedDto);
     }
 
     @Test
     void getMember_givenUnknownId_thenThrowsMemberNotFound() {
-        when(memberRepository.findById(999999)).thenReturn(Optional.empty());
+        when(memberRepository.findById(999999L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> memberService.getMember(999999))
+        assertThatThrownBy(() -> memberService.getMember(999999L))
                 .isInstanceOf(MemberNotFoundException.class)
                 .hasMessage("No member found for id: 999999");
 

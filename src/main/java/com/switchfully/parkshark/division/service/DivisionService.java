@@ -47,7 +47,7 @@ public class DivisionService {
         return divisionMapper.toDto(divisionRepository.findAll());
     }
 
-    public DivisionDto getDivision(Integer id) {
+    public DivisionDto getDivision(Long id) {
         Division division = (divisionRepository.findById(id))
                 .orElseThrow(() -> new DivisionNotFoundException(id));
 

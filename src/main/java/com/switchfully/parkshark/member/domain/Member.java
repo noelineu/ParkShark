@@ -14,7 +14,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private int id;
+    private Long id;
 
     @Column(name = "FIRST_NAME")
     private String firstName;
@@ -76,7 +76,7 @@ public class Member {
         this.address = address;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

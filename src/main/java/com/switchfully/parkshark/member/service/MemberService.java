@@ -51,7 +51,7 @@ public class MemberService {
         return memberMapper.toSummaryDto(memberRepository.findAll());
     }
 
-    public MemberDto getMember(Integer id) {
+    public MemberDto getMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(id));
 
