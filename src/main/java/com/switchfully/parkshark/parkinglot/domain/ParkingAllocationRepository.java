@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ParkingLotAllocationRepository extends JpaRepository<ParkingAllocation, Integer> {
+public interface ParkingAllocationRepository extends JpaRepository<ParkingAllocation, Integer> {
 
     int countParkingAllocationByParkingLotAndStatus(ParkingLot parkingLot, Status status);
 

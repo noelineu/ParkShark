@@ -4,7 +4,6 @@ import com.switchfully.parkshark.parkinglot.api.dto.CreateParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.domain.Status;
 import com.switchfully.parkshark.parkinglot.service.ParkingAllocationService;
-import com.switchfully.parkshark.parkinglot.service.ParkingLotService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -15,11 +14,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/allocations", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AllocationController {
+public class ParkingAllocationController {
 
     private final ParkingAllocationService parkingAllocationService;
 
-    public AllocationController(ParkingAllocationService parkingAllocationService) {
+    public ParkingAllocationController(ParkingAllocationService parkingAllocationService) {
         this.parkingAllocationService = parkingAllocationService;
     }
 

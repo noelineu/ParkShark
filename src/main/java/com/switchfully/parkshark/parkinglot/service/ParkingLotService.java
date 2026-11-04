@@ -2,7 +2,6 @@ package com.switchfully.parkshark.parkinglot.service;
 
 import com.switchfully.parkshark.division.domain.Division;
 import com.switchfully.parkshark.division.domain.DivisionRepository;
-import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MemberRepository;
 import com.switchfully.parkshark.parkinglot.api.dto.*;
 import com.switchfully.parkshark.parkinglot.domain.*;
@@ -23,15 +22,15 @@ public class ParkingLotService {
     private final ParkingLotMapper parkingLotMapper;
     private final DivisionRepository divisionRepository;
     private final MemberRepository memberRepository;
-    private final ParkingLotAllocationRepository parkingLotAllocationRepository;
+    private final ParkingAllocationRepository parkingAllocationRepository;
     private final ParkingAllocationMapper parkingAllocationMapper;
 
-    public ParkingLotService(ParkingLotRepository parkingLotRepository, ParkingLotMapper parkingLotMapper, DivisionRepository divisionRepository, MemberRepository memberRepository, ParkingLotAllocationRepository parkingLotAllocationRepository, ParkingAllocationMapper parkingAllocationMapper) {
+    public ParkingLotService(ParkingLotRepository parkingLotRepository, ParkingLotMapper parkingLotMapper, DivisionRepository divisionRepository, MemberRepository memberRepository, ParkingAllocationRepository parkingAllocationRepository, ParkingAllocationMapper parkingAllocationMapper) {
         this.parkingLotRepository = parkingLotRepository;
         this.parkingLotMapper = parkingLotMapper;
         this.divisionRepository = divisionRepository;
         this.memberRepository = memberRepository;
-        this.parkingLotAllocationRepository = parkingLotAllocationRepository;
+        this.parkingAllocationRepository = parkingAllocationRepository;
         this.parkingAllocationMapper = parkingAllocationMapper;
     }
 
@@ -51,7 +50,7 @@ public class ParkingLotService {
     }
 
     private boolean hasCapacity(ParkingLot parkingLot) {
-        int occupiedSpaces = parkingLotAllocationRepository.countParkingAllocationByParkingLotAndStatus(parkingLot, Status.ACTIVE);
+        int occupiedSpaces = parkingAllocationRepository.countParkingAllocationByParkingLotAndStatus(parkingLot, Status.ACTIVE);
         return parkingLot.getMaxCapacity() > occupiedSpaces;
     }
 

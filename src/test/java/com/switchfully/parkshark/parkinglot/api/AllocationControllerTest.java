@@ -1,6 +1,6 @@
 package com.switchfully.parkshark.parkinglot.api;
 
-import com.switchfully.parkshark.parkinglot.domain.ParkingLotAllocationRepository;
+import com.switchfully.parkshark.parkinglot.domain.ParkingAllocationRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,17 +17,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class AllocationControllerIntegrationTest {
+class ParkingAllocationControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private ParkingLotAllocationRepository parkingLotAllocationRepository;
+    private ParkingAllocationRepository parkingAllocationRepository;
 
     @Test
     void getAllAllocations_withoutFilters_thenReturnsAll() throws Exception {
-        long expected = parkingLotAllocationRepository.count();
+        long expected = parkingAllocationRepository.count();
 
         mockMvc.perform(get("/allocations"))
                 .andExpect(status().isOk())

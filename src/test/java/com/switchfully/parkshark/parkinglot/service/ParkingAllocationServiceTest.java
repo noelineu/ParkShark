@@ -3,7 +3,7 @@ package com.switchfully.parkshark.parkinglot.service;
 import com.switchfully.parkshark.member.domain.MemberRepository;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.domain.ParkingAllocation;
-import com.switchfully.parkshark.parkinglot.domain.ParkingLotAllocationRepository;
+import com.switchfully.parkshark.parkinglot.domain.ParkingAllocationRepository;
 import com.switchfully.parkshark.parkinglot.domain.ParkingLotRepository;
 import com.switchfully.parkshark.parkinglot.domain.Status;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class ParkingAllocationServiceTest {
     @Mock
     private MemberRepository memberRepository;
     @Mock
-    private ParkingLotAllocationRepository parkingLotAllocationRepository;
+    private ParkingAllocationRepository parkingAllocationRepository;
     @Mock
     private ParkingAllocationMapper parkingAllocationMapper;
 
@@ -45,20 +45,20 @@ class ParkingAllocationServiceTest {
 
     @Test
     void givenNoStatus_whenGettingAllocations_thenSearchesAllAllocations() {
-        when(parkingLotAllocationRepository.findAll()).thenReturn(List.of());
+        when(parkingAllocationRepository.findAll()).thenReturn(List.of());
 
         parkingAllocationService.getAllParkingAllocations(null, null, Sort.Direction.ASC);
 
-        verify(parkingLotAllocationRepository).findAll();
+        verify(parkingAllocationRepository).findAll();
     }
 
     @Test
     void givenStatus_whenGettingAllocations_thenSearchesOnThatStatus() {
-        when(parkingLotAllocationRepository.findParkingAllocationsByStatus(Status.INACTIVE)).thenReturn(List.of());
+        when(parkingAllocationRepository.findParkingAllocationsByStatus(Status.INACTIVE)).thenReturn(List.of());
 
         parkingAllocationService.getAllParkingAllocations(null, Status.INACTIVE, Sort.Direction.ASC);
 
-        verify(parkingLotAllocationRepository).findParkingAllocationsByStatus(Status.INACTIVE);
+        verify(parkingAllocationRepository).findParkingAllocationsByStatus(Status.INACTIVE);
     }
 
     @Test
@@ -73,7 +73,7 @@ class ParkingAllocationServiceTest {
         when(parkingAllocationMapper.toDto(january)).thenReturn(januaryDto);
         when(parkingAllocationMapper.toDto(march)).thenReturn(marchDto);
 
-        when(parkingLotAllocationRepository.findAll()).thenReturn(List.of(march, january));
+        when(parkingAllocationRepository.findAll()).thenReturn(List.of(march, january));
 
         List<ParkingAllocationDto> result =
                 parkingAllocationService.getAllParkingAllocations(null, null, Sort.Direction.ASC);

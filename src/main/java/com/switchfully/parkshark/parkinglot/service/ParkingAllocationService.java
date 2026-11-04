@@ -6,30 +6,24 @@ import com.switchfully.parkshark.parkinglot.api.dto.CreateParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.domain.*;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ParkingAllocationService {
 
     private final ParkingLotRepository parkingLotRepository;
     private final MemberRepository memberRepository;
-    private final ParkingLotAllocationRepository parkingLotAllocationRepository;
+    private final ParkingAllocationRepository parkingAllocationRepository;
     private final ParkingAllocationMapper parkingAllocationMapper;
 
     public ParkingAllocationService(ParkingLotRepository parkingLotRepository, MemberRepository memberRepository,
-                                    ParkingLotAllocationRepository parkingLotAllocationRepository, ParkingAllocationMapper parkingAllocationMapper) {
+                                    ParkingAllocationRepository parkingAllocationRepository, ParkingAllocationMapper parkingAllocationMapper) {
         this.parkingLotRepository = parkingLotRepository;
         this.memberRepository = memberRepository;
-        this.parkingLotAllocationRepository = parkingLotAllocationRepository;
+        this.parkingAllocationRepository = parkingAllocationRepository;
         this.parkingAllocationMapper = parkingAllocationMapper;
     }
 
@@ -44,7 +38,7 @@ public class ParkingAllocationService {
             throw new IllegalArgumentException("Parking lot " + parkingLot.getId() + " is full");
         }
 
-        ParkingAllocation allocation = parkingLotAllocationRepository.save(parkingAllocationMapper.toDomain(dto, member, parkingLot));
+        ParkingAllocation allocation = parkingAllocationRepository.save(parkingAllocationMapper.toDomain(dto, member, parkingLot));
         return parkingAllocationMapper.toDto(allocation);
 
     }
@@ -54,7 +48,7 @@ public class ParkingAllocationService {
         if (limit != null && limit <= 0) {
             throw new IllegalArgumentException("Limit cannot be negative or equal to 0");
         }
-        List<ParkingAllocation> parkingAllocations = status == null ? parkingLotAllocationRepository.findAll() : parkingLotAllocationRepository.findParkingAllocationsByStatus(status);
+        List<ParkingAllocation> parkingAllocations = status == null ? parkingAllocationRepository.findAll() : parkingAllocationRepository.findParkingAllocationsByStatus(status);
 
         Comparator<ParkingAllocation> byStartTime = Comparator.comparing(ParkingAllocation::getStartTime);
 
@@ -70,7 +64,7 @@ public class ParkingAllocationService {
     }
 
     private boolean hasCapacity(ParkingLot parkingLot) {
-        int occupiedSpaces = parkingLotAllocationRepository.countParkingAllocationByParkingLotAndStatus(parkingLot, Status.ACTIVE);
+        int occupiedSpaces = parkingAllocationRepository.countParkingAllocationByParkingLotAndStatus(parkingLot, Status.ACTIVE);
         return parkingLot.getMaxCapacity() > occupiedSpaces;
     }
 
