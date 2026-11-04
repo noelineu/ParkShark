@@ -1,5 +1,7 @@
 package com.switchfully.parkshark.parkinglot.service;
 
+import com.switchfully.parkshark.exception.MemberNotFoundException;
+import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MemberRepository;
 import com.switchfully.parkshark.parkinglot.api.dto.ParkingAllocationDto;
 import com.switchfully.parkshark.parkinglot.domain.ParkingAllocation;
@@ -15,12 +17,11 @@ import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ParkingAllocationServiceTest {
@@ -79,5 +80,52 @@ class ParkingAllocationServiceTest {
                 parkingAllocationService.getAllParkingAllocations(null, null, Sort.Direction.ASC);
 
         assertEquals(List.of(januaryDto, marchDto), result);
+    }
+
+    @Test
+    void givenUnknownMember_whenGettingAllocationsByMember_thenThrowsMemberNotFoundException() {
+        when(memberRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(MemberNotFoundException.class,
+                () -> parkingAllocationService.getAllParkingLotsByMember(99L, null));
+
+        verify(parkingAllocationRepository, never()).findParkingAllocationsByMember(any());
+        verify(parkingAllocationRepository, never()).findParkingAllocationsByMemberAndStatus(any(), any());
+    }
+
+    @Test
+    void givenNoStatus_whenGettingAllocationsByMember_thenSearchesAllAllocationsOfThatMember() {
+        Member member = mock(Member.class);
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
+        when(parkingAllocationRepository.findParkingAllocationsByMember(member)).thenReturn(List.of());
+
+        parkingAllocationService.getAllParkingLotsByMember(1L, null);
+
+        verify(parkingAllocationRepository).findParkingAllocationsByMember(member);
+        verify(parkingAllocationRepository, never()).findParkingAllocationsByMemberAndStatus(any(), any());
+    }
+
+    @Test
+    void givenStatus_whenGettingAllocationsByMember_thenSearchesOnMemberAndThatStatus() {
+        Member member = mock(Member.class);
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
+        when(parkingAllocationRepository.findParkingAllocationsByMemberAndStatus(member, Status.ACTIVE))
+                .thenReturn(List.of());
+
+        parkingAllocationService.getAllParkingLotsByMember(1L, Status.ACTIVE);
+
+        verify(parkingAllocationRepository).findParkingAllocationsByMemberAndStatus(member, Status.ACTIVE);
+        verify(parkingAllocationRepository, never()).findParkingAllocationsByMember(any());
+    }
+
+    @Test
+    void givenMemberWithoutAllocations_whenGettingAllocationsByMember_thenReturnsEmptyList() {
+        Member member = mock(Member.class);
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
+        when(parkingAllocationRepository.findParkingAllocationsByMember(member)).thenReturn(List.of());
+
+        List<ParkingAllocationDto> result = parkingAllocationService.getAllParkingLotsByMember(1L, null);
+
+        assertEquals(List.of(), result);
     }
 }
