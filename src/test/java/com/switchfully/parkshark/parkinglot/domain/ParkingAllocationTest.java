@@ -7,6 +7,8 @@ import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MembershipLevel;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
@@ -61,5 +63,34 @@ class ParkingAllocationTest {
 
         assertThatThrownBy(() -> allocation.stop(1L))
                 .isInstanceOf(InactiveAllocationException.class);
+    }
+
+    @Test
+    void billedHours_areRoundedUp() {
+        LocalDateTime start = LocalDateTime.of(2026, 11, 4, 10, 0);
+
+        assertThat(ParkingAllocation.billedHoursBetween(start, start.plusHours(2).plusMinutes(20))).isEqualTo(3);
+        assertThat(ParkingAllocation.billedHoursBetween(start, start.plusHours(2))).isEqualTo(2);
+        assertThat(ParkingAllocation.billedHoursBetween(start, start.plusHours(2).plusSeconds(1))).isEqualTo(3);
+        assertThat(ParkingAllocation.billedHoursBetween(start, start.plusMinutes(59))).isEqualTo(1);
+    }
+
+    @Test
+    void activeAllocation_cannotBeBilledNorInvoiced() {
+        ParkingAllocation allocation = new ParkingAllocation(memberWithId(1L), parkingLot, "1-ABC-123");
+
+        assertThatThrownBy(allocation::getBilledHours).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(allocation::markAsInvoiced).isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void stoppedAllocation_canBeInvoicedOnlyOnce() {
+        ParkingAllocation allocation = new ParkingAllocation(memberWithId(1L), parkingLot, "1-ABC-123");
+        allocation.stop(1L);
+
+        allocation.markAsInvoiced();
+
+        assertThat(allocation.getStatus()).isEqualTo(Status.INVOICED);
+        assertThatThrownBy(allocation::markAsInvoiced).isInstanceOf(IllegalStateException.class);
     }
 }

@@ -4,6 +4,8 @@ import com.switchfully.parkshark.exception.OwnerAllocationException;
 import com.switchfully.parkshark.member.domain.Member;
 import com.switchfully.parkshark.member.domain.MembershipLevel;
 import jakarta.persistence.*;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
@@ -67,6 +69,26 @@ public class ParkingAllocation {
 
         this.stopTime = LocalDateTime.now();
         this.status = Status.INACTIVE;
+    }
+
+    public long getBilledHours() {
+        if (stopTime == null) {
+            throw new IllegalArgumentException("Allocation " + id + " is still active and cannot be billed.");
+        }
+        return billedHoursBetween(startTime, stopTime);
+    }
+
+    static long billedHoursBetween(LocalDateTime start, LocalDateTime stop) {
+        Duration duration = Duration.between(start,stop);
+        long wholeHours = duration.toHours();
+        return duration.equals(Duration.ofHours(wholeHours)) ? wholeHours : wholeHours + 1;
+    }
+
+    public void markAsInvoiced() {
+        if (status != Status.INACTIVE) {
+            throw new IllegalStateException("Only a stopped allocation can be invoiced, allocation " + id + " is " + status);
+        }
+        this.status = Status.INVOICED;
     }
 
     public Long getId() {
