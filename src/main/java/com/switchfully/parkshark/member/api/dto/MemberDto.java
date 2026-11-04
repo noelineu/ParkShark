@@ -6,7 +6,7 @@ import com.switchfully.parkshark.member.domain.MembershipLevel;
 import java.time.LocalDate;
 
 public record MemberDto(
-        int id,
+        Long id,
         String firstName,
         String lastName,
         String telephone,

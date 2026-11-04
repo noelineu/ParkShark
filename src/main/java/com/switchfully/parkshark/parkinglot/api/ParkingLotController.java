@@ -1,8 +1,6 @@
 package com.switchfully.parkshark.parkinglot.api;
 
-import com.switchfully.parkshark.parkinglot.api.dto.CreateParkingLotDto;
-import com.switchfully.parkshark.parkinglot.api.dto.ParkingLotDto;
-import com.switchfully.parkshark.parkinglot.api.dto.ParkingLotSummaryDto;
+import com.switchfully.parkshark.parkinglot.api.dto.*;
 import com.switchfully.parkshark.parkinglot.service.ParkingLotService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
