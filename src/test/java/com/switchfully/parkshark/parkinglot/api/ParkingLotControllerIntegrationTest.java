@@ -182,4 +182,26 @@ class ParkingLotControllerIntegrationTest {
                 .andExpect(jsonPath(guillemins + ".contactPersonEmail").value("marie.dubois@parkshark.be"))
                 .andExpect(jsonPath(guillemins + ".contactPersonTelephone").value(contains(nullValue())));
     }
+
+    @Test
+    void getParkingLotById_givenExistingId_thenReturnsAllItsData() throws Exception {
+        mockMvc.perform(get("/parking-lots/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Ladeuze Underground"))
+                .andExpect(jsonPath("$.category").value("UNDERGROUND_BUILDING"))
+                .andExpect(jsonPath("$.maxCapacity").value(250))
+                .andExpect(jsonPath("$.pricePerHour").value(2.50))
+                .andExpect(jsonPath("$.contactPerson.email").value("jan.peeters@parkshark.be"))
+                .andExpect(jsonPath("$.address.streetName").value("Ladeuzeplein"))
+                .andExpect(jsonPath("$.address.postalCode.zip").value("3000"))
+                .andExpect(jsonPath("$.division.name").value("ParkShark Leuven"));
+    }
+
+    @Test
+    void getParkingLotById_givenUnknownId_thenReturns404() throws Exception {
+        mockMvc.perform(get("/parking-lots/999999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.detail").value("No parking lot found for id: 999999"));
+    }
 }
